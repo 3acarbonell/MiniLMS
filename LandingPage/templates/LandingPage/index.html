@@ -1,0 +1,282 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini LMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <style>
+        .bg-custom {
+            background-color: #f7fbff;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            border-radius: 50%;
+            background-color: #1d293d;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-login {
+            --bs-btn-bg: #fff;
+            --bs-btn-color: #1d293d;
+            --bs-btn-border-color: #1d293d;
+            --bs-btn-hover-bg: #fff;
+            --bs-btn-hover-color: #1d293d;
+            --bs-btn-hover-border-color: #1d293d;
+        }
+
+        .btn-sing-up {
+            --bs-btn-bg: #1d293d;
+            --bs-btn-color: #fff;
+            --bs-btn-border-color: #1d293d;
+            --bs-btn-hover-bg: #1d293d;
+            --bs-btn-hover-color: #fff;
+            --bs-btn-hover-border-color: #1d293d;
+        }
+
+        .btn-start {
+            --bs-btn-bg: #1d293d;
+            --bs-btn-color: #fff;
+            --bs-btn-border-color: #1d293d;
+            --bs-btn-hover-bg: #1d293d;
+            --bs-btn-hover-color: #fff;
+            --bs-btn-hover-border-color: #1d293d;
+        }
+    </style>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar bg-light px-3 border-bottom shadow-sm">
+        <div class="container-fluid d-flex justify-content-between align-items-center flex-nowrap">
+
+            <a class="navbar-brand d-flex align-items-center mb-0" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="44" viewBox="0 0 24 24" fill="none"
+                    stroke="#1d293d" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-graduation-cap" x="56" y="56">
+                    <path
+                        d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z">
+                    </path>
+                    <path d="M22 10v6"></path>
+                    <path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"></path>
+                </svg>
+                <span class="fw-bold text-truncate">Mini LMS</span>
+            </a>
+
+            <div class="d-flex gap-2 flex-shrink-0">
+                <a href="#" class="btn btn-outline btn-sm btn-login">Iniciar sesión</a>
+                <a href="#" class="btn btn-sm btn-sing-up">Registrarse</a>
+            </div>
+
+        </div>
+    </nav>
+
+    <header class="py-5 text-center bg-custom">
+        <h1>Plataforma de Aprendizaje Simple y Efectiva</h1>
+        <p class="fs-4 text-secondary mb-5 mx-auto" style="max-width: 42rem;">
+            EduPlat es tu espacio educativo diseñado para facilitar la enseñanza y el aprendizaje Gestiona cursos,
+            contenido y evaluaciones en un solo lugar.</p>
+        <a href="#" class="btn btn-lg btn-start">Comenzar Ahora</a>
+    </header>
+
+    <main class="flex-grow-1">
+        <section class="py-5 bg-custom">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-12 col-md-4">
+                        <div class="card text-start p-4 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-center mb-3">
+                                    <img src="{% static 'landingpage/check.svg' %}" width="60" height="54">
+                                    <h5 class="card-title mb-0">Gestión de Cursos</h5>
+                                </div>
+                                <p class="card-text text-muted">
+                                    Crea y organiza cursos fácilmente. Estructura tu contenido educativo de manera clara
+                                    y accesible.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="card text-start p-4 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-center mb-3">
+                                    <img src="{% static 'landingpage/users.svg' %}" width="60" height="54">
+                                    <h5 class="card-title mb-0">Administración de Estudiantes</h5>
+                                </div>
+                                <p class="card-text text-muted">
+                                    Inscribe estudiantes, asigna cursos y monitorea su progreso en tiempo real.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="card text-start p-4 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-center mb-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                                        class="me-2" viewBox="0 0 16 16">
+                                        <path
+                                            d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.354 5.646a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7 9.293l3.646-3.647a.5.5 0 0 1 .708 0z" />
+                                    </svg>
+                                    <h5 class="card-title mb-0">Contenido Diverso</h5>
+                                </div>
+                                <p class="card-text text-muted">
+                                    Comparte documentos, presentaciones, hojas de cálculo y más. Soporta PDF, DOCX, PPTX
+                                    y XLSX.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="card text-start p-4 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-center mb-3">
+                                    <img src="{% static 'landingpage/tick.svg' %}" width="60" height="54">
+                                    <h5 class="card-title mb-0">Evaluaciones Interactivas</h5>
+                                </div>
+                                <p class="card-text text-muted">
+                                    Crea evaluaciones con preguntas de verdadero/falso y selección múltiple con o sin
+                                    imágenes.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="card text-start p-4 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-center mb-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                                        class="me-2" viewBox="0 0 16 16">
+                                        <path
+                                            d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.354 5.646a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7 9.293l3.646-3.647a.5.5 0 0 1 .708 0z" />
+                                    </svg>
+                                    <h5 class="card-title mb-0">Interfaz Intuitiva</h5>
+                                </div>
+                                <p class="card-text text-muted">
+                                    Diseño limpio y profesional optimizado para tablets y escritorio. Fácil de usar para
+                                    todos.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="card text-start p-4 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-center mb-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                                        class="me-2" viewBox="0 0 16 16">
+                                        <path
+                                            d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.354 5.646a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7 9.293l3.646-3.647a.5.5 0 0 1 .708 0z" />
+                                    </svg>
+                                    <h5 class="card-title mb-0">Seguimiento de Progreso</h5>
+                                </div>
+                                <p class="card-text text-muted">
+                                    Visualiza el desempeño de tus estudiantes y mantén un registro de las evaluaciones
+                                    completadas.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-5">
+            <div class="container">
+
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold">¿Cómo funciona?</h2>
+                </div>
+
+                <div class="col-lg-6 mx-auto">
+                    <ol class="list-unstyled">
+                        <li class="d-flex mb-4">
+                            <div class="step-number">1</div>
+                            <div>
+                                <h5 class="mb-1">Regístrate como Profesor</h5>
+                                <p class="text-muted mb-0">
+                                    Crea tu cuenta de profesor para acceder a todas las herramientas de gestión
+                                    educativa.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-4">
+                            <div class="step-number">2</div>
+                            <div>
+                                <h5 class="mb-1">Crea tus Cursos</h5>
+                                <p class="text-muted mb-0">
+                                    Diseña cursos con título, descripción y agrega todo el contenido necesario para tus
+                                    estudiantes.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-4">
+                            <div class="step-number">3</div>
+                            <div>
+                                <h5 class="mb-1">Añade Estudiantes y Contenido</h5>
+                                <p class="text-muted mb-0">
+                                    Crea cuentas para tus estudiantes, inscríbelos en cursos y sube archivos o crea
+                                    evaluaciones.
+                                </p>
+                            </div>
+                        </li>
+                        <li class="d-flex">
+                            <div class="step-number">4</div>
+                            <div>
+                                <h5 class="mb-1">Enseña y Evalúa</h5>
+                                <p class="text-muted mb-0">
+                                    Los estudiantes acceden al contenido, realizan evaluaciones y tú monitoreas su
+                                    progreso.
+                                </p>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <div class="d-flex justify-content-center align-items-center mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="44" viewBox="0 0 24 24" fill="none"
+                    stroke="#ffffff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-graduation-cap" x="56" y="56">
+                    <path
+                        d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z">
+                    </path>
+                    <path d="M22 10v6"></path>
+                    <path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"></path>
+                </svg>
+                <span class="fw-bold text-truncate">Mini LMS</span>
+            </div>
+
+
+            <div>
+                <p class="mb-0 small text-white-50">
+                    Plataforma educativa diseñada para facilitar el aprendizaje
+                </p>
+            </div>
+
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
