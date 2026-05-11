@@ -1,0 +1,137 @@
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar sesión</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <style>
+        .bg-custom {
+            background-color: #f7fbff;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            border-radius: 50%;
+            background-color: #1d293d;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-login {
+            width: 95%;
+            --bs-btn-bg: #1d293d;
+            --bs-btn-color: #fff;
+            --bs-btn-border-color: #1d293d;
+            --bs-btn-hover-bg: #1d293d;
+            --bs-btn-hover-color: #fff;
+            --bs-btn-hover-border-color: #1d293d;
+        }
+
+        .btn-sing-up {
+            --bs-btn-bg: #fff;
+            --bs-btn-color: #1d293d;
+            --bs-btn-border-color: #1d293d;
+            --bs-btn-hover-bg: #fff;
+            --bs-btn-hover-color: #1d293d;
+            --bs-btn-hover-border-color: #1d293d;
+        }
+    </style>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar bg-light px-3 border-bottom shadow-sm">
+        <div class="container-fluid d-flex justify-content-between align-items-center flex-nowrap">
+            <a class="navbar-brand d-flex align-items-center mb-0" href="">
+                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="44" viewBox="0 0 24 24" fill="none"
+                    stroke="#1d293d" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-graduation-cap" x="56" y="56">
+                    <path
+                        d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z">
+                    </path>
+                    <path d="M22 10v6"></path>
+                    <path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"></path>
+                </svg>
+                <span class="fw-bold text-truncate">Mini LMS</span>
+            </a>
+            <div class="d-flex gap-2 flex-shrink-0">
+                <a href="" class="btn btn-sm btn-sing-up">Registrarse</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container flex-grow-1 d-flex align-items-center justify-content-center">
+        <form method="POST" class="p-4 border rounded shadow-sm bg-light">
+            {% csrf_token %}
+            <div class="row align-items-center text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="44" viewBox="0 0 24 24" fill="none"
+                    stroke="#1d293d" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-graduation-cap" x="56" y="56">
+                    <path
+                        d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z">
+                    </path>
+                    <path d="M22 10v6"></path>
+                    <path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"></path>
+                </svg>
+                <span class="fw-bold text-truncate">Mini LMS</span>
+            </div>
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-danger p-2 small">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+
+            <div class="row">
+                {{ form|crispy}}
+            </div>
+
+            <div class="row justify-content-center text-center">
+                <button type="submit" class="btn btn-login">Iniciar sesión</button>
+                <a href="" style="margin-top: 20px;">Recuperar contraseña</a>
+            </div>
+        </form>
+    </main>
+
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <div class="d-flex justify-content-center align-items-center mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="44" viewBox="0 0 24 24" fill="none"
+                    stroke="#ffffff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-graduation-cap" x="56" y="56">
+                    <path
+                        d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z">
+                    </path>
+                    <path d="M22 10v6"></path>
+                    <path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"></path>
+                </svg>
+                <span class="fw-bold text-truncate">Mini LMS</span>
+            </div>
+
+            <div>
+                <p class="mb-0 small text-white-50">
+                    Plataforma educativa diseñada para facilitar el aprendizaje
+                </p>
+            </div>
+
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
