@@ -48,7 +48,11 @@
 
             <div class="d-flex gap-2 flex-shrink-0">
                 <a href="#" class="btn btn-outline btn-sm btn-login">User</a>
-                <a href="#" class="btn btn-sm btn-sing-up">Cerrar sesión</a>
+
+                <form action="{% url 'core:logout' %}" method="POST" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm">Cerrar sesión</button>
+                </form>
             </div>
 
         </div>

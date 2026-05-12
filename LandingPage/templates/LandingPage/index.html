@@ -62,7 +62,7 @@
     <nav class="navbar bg-light px-3 border-bottom shadow-sm">
         <div class="container-fluid d-flex justify-content-between align-items-center flex-nowrap">
 
-            <a class="navbar-brand d-flex align-items-center mb-0" href="#">
+            <a class="navbar-brand d-flex align-items-center mb-0" href="{% url 'landing_page:index' %}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="50" height="44" viewBox="0 0 24 24" fill="none"
                     stroke="#1d293d" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
                     class="lucide lucide-graduation-cap" x="56" y="56">
@@ -76,8 +76,8 @@
             </a>
 
             <div class="d-flex gap-2 flex-shrink-0">
-                <a href="#" class="btn btn-outline btn-sm btn-login">Iniciar sesión</a>
-                <a href="#" class="btn btn-sm btn-sing-up">Registrarse</a>
+                <a href="{% url 'core:login' %}" class="btn btn-outline btn-sm btn-login">Iniciar sesión</a>
+                <a href="{% url 'core:register' %}" class="btn btn-sm btn-sing-up">Registrarse</a>
             </div>
 
         </div>
@@ -88,7 +88,7 @@
         <p class="fs-4 text-secondary mb-5 mx-auto" style="max-width: 42rem;">
             EduPlat es tu espacio educativo diseñado para facilitar la enseñanza y el aprendizaje Gestiona cursos,
             contenido y evaluaciones en un solo lugar.</p>
-        <a href="#" class="btn btn-lg btn-start">Comenzar Ahora</a>
+        <a href="{% url 'core:register' %}" class="btn btn-lg btn-start">Comenzar Ahora</a>
     </header>
 
     <main class="flex-grow-1">
