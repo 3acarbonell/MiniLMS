@@ -32,9 +32,9 @@ class Login(LoginView):
         user = self.request.user
 
         if user.role == 'teacher':
-            return reverse_lazy('dashboard_teacher')
+            return reverse_lazy('core:dashboard_teacher')
         elif user.role == 'student':
-            return reverse_lazy('dashboard_student')
+            return reverse_lazy('core:dashboard_student')
 
         return reverse_lazy('index')
 
