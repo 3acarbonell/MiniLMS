@@ -17,8 +17,7 @@ def register(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, "Usuario creado")
-            return HttpResponse('<h1>Cuenta creada</h1>')
+            return reverse_lazy('core:login')
     else:
         form = RegisterForm()
 
@@ -43,7 +42,7 @@ class Login(LoginView):
         return super().form_invalid(form)
 
     def form_valid(self, form):
-        messages.success(self.request, "Bienvenido de nuevo")
+        # messages.success(self.request, "Bienvenido de nuevo")
         return super().form_valid(form)
 
 
