@@ -5,8 +5,10 @@ from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.views.generic.edit import CreateView
 
-from django.http import HttpResponse
+from .models import Course
+from .forms import CourseForm
 
 
 # Create your views here.
@@ -17,7 +19,7 @@ def register(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
-            return reverse_lazy('core:login')
+            return redirect('core:login')
     else:
         form = RegisterForm()
 
@@ -51,7 +53,11 @@ def dashboard_teacher(request):
     if request.user.role != 'teacher':
         return redirect('index')
 
-    return render(request, "core/dashboard/teacher/board_teacher.html")
+    courses = Course.objects.filter(teacher=request.user)
+
+    return render(request, "core/dashboard/teacher/board_teacher.html", {
+        'courses': courses
+    })
 
 
 @login_required
@@ -60,3 +66,14 @@ def dashboard_student(request):
         return redirect('index')
 
     return render(request, "core/dashboard/student/board_student.html")
+
+
+class CourseCreateView(CreateView):
+    model = Course
+    form_class = CourseForm
+    template_name = 'core/dashboard/teacher/course_form.html'
+    success_url = reverse_lazy('core:dashboard_teacher')
+
+    def form_valid(self, form):
+        form.instance.teacher = self.request.user
+        return super().form_valid(form)
