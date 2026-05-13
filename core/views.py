@@ -20,6 +20,8 @@ def register(request):
         if form.is_valid():
             form.save()
             return redirect('core:login')
+        else:
+            print(form.errors)
     else:
         form = RegisterForm()
 

@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Row, Column
+from crispy_forms.layout import Layout, Row, Column, Submit
 
 
 from .models import User, Course
@@ -11,7 +11,8 @@ from .models import User, Course
 class RegisterForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'role']
+        fields = ['username', 'first_name',
+                  'last_name', 'email', 'role', 'password1', 'password2']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -27,6 +28,9 @@ class RegisterForm(UserCreationForm):
                 Column('last_name', css_class='col-md-6'),
             ),
             'email',
+            'password1',
+            'password2',
+            Submit('submit', 'Crear cuenta', css_class='btn btn-login')
         )
 
 
