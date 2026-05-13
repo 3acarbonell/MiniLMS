@@ -1,7 +1,12 @@
+from django import forms
 from django.contrib.auth.forms import UserCreationForm
+
+
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Row, Column, Submit
-from .models import User
+from crispy_forms.layout import Layout, Row, Column
+
+
+from .models import User, Course
 
 
 class RegisterForm(UserCreationForm):
@@ -21,3 +26,9 @@ class RegisterForm(UserCreationForm):
             'email',
             'role'
         )
+
+
+class CourseForm(forms.ModelForm):
+    class Meta:
+        model = Course
+        fields = ['title', 'description']
