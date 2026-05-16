@@ -19,4 +19,8 @@ class Course(models.Model):
     teacher = models.ForeignKey(
         User, models.DO_NOTHING, related_name='course_of_teacher')
     students = models.ManyToManyField(
-        User, related_name='student_of_course')
+        User, related_name='student_of_course', blank=True)
+
+    def __str__(self):
+        count = self.students.count()
+        return f"{self.title} | {self.teacher} | {count} estudiantes"
