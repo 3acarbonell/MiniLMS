@@ -14,43 +14,87 @@
             background-color: #f7fbff;
         }
 
-        .step-number {
-            width: 40px;
-            height: 40px;
-            min-width: 40px;
+        .asteriskField {
+            display: none;
+        }
+
+        .custom-input[readonly] {
+            background-color: #f8f9fa;
+            border-right: none;
+        }
+
+        .edit-btn {
+            border-left: 1px solid #dee2e6;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .edit-btn:hover {
+            background-color: #1d293d !important;
+            color: white !important;
+        }
+
+        .custom-input:focus {
+            box-shadow: none;
+            border-color: #1d293d;
+        }
+
+        .avatar-wrapper {
+            position: relative;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .avatar-edit-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
             background-color: #1d293d;
             color: white;
+            border: 2px solid white;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            margin-right: 15px;
-            position: relative;
-            z-index: 1;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
-        .btn-login {
-            width: 95%;
-            --bs-btn-bg: #1d293d;
-            --bs-btn-color: #fff;
-            --bs-btn-border-color: #1d293d;
-            --bs-btn-hover-bg: #1d293d;
-            --bs-btn-hover-color: #fff;
-            --bs-btn-hover-border-color: #1d293d;
+        .avatar-edit-btn:hover {
+            background-color: #2a3b55;
+            transform: scale(1.1);
         }
 
-        .btn-sing-up {
-            --bs-btn-bg: #fff;
-            --bs-btn-color: #1d293d;
-            --bs-btn-border-color: #1d293d;
-            --bs-btn-hover-bg: #fff;
-            --bs-btn-hover-color: #1d293d;
-            --bs-btn-hover-border-color: #1d293d;
+        .nav-user-link img {
+            object-fit: cover;
+            display: block;
         }
 
-        .asteriskField {
-            display: none;
+        .nav-user-link:hover {
+            background-color: rgba(29, 41, 61, 0.05);
+            color: #1d293d;
+        }
+
+        .nav-user-link img {
+            object-fit: cover;
+            display: block;
+        }
+
+        .nav-user-link:hover {
+            background-color: rgba(29, 41, 61, 0.05);
+            color: #1d293d;
         }
     </style>
 </head>
@@ -59,7 +103,86 @@
     {% include 'core/components/navbar.html' %}
 
     <main class="container flex-grow-1 d-flex align-items-center justify-content-center">
-        <h1>{{ user.first_name }}</h1>
+
+        <div class="d-flex justify-content-center mb-4 text-center">
+            <div class="avatar-wrapper">
+                <img src="https://ui-avatars.com/api/?name={{ user.first_name }}+{{ user.last_name }}&background=1d293d&color=fff&size=256"
+                    alt="Avatar" class="avatar-img">
+
+                <button type="button" class="avatar-edit-btn" title="Cambiar imagen">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                    </svg>
+                </button>
+
+                <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+            </div>
+        </div>
+
+
+        <div class="container mt-4">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Nombre</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control custom-input" name="first_name"
+                                    value="{{ user.first_name }}" readonly>
+
+
+                                <button class="btn btn-outline-dark edit-btn" type="button" onclick="enableField(this)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Apellido</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control custom-input" name="last_name"
+                                    value="{{ user.last_name }}" readonly>
+
+
+                                <button class="btn btn-outline-dark edit-btn" type="button" onclick="enableField(this)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Email</label>
+                            <div class="input-group">
+                                <input type="email" class="form-control custom-input" name="email"
+                                    value="{{ user.email }}" readonly>
+
+
+                                <button class="btn btn-outline-dark edit-btn" type="button" onclick="enableField(this)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100">Guardar Cambios</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <footer class="bg-dark text-white py-4">
@@ -89,6 +212,27 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
+
+    <script>
+        function enableField(btn) {
+            const input = btn.closest('.input-group').querySelector('input');
+            const saveContainer = document.getElementById('saveContainer');
+
+            if (input) {
+                input.removeAttribute('readonly');
+                input.focus();
+
+                input.style.backgroundColor = "#ffffff";
+                btn.classList.replace('btn-outline-dark', 'btn-dark');
+
+                if (saveContainer) {
+                    saveContainer.classList.remove('d-none');
+                }
+            } else {
+                console.error("No se encontró el input relacionado al botón.");
+            }
+        }
+    </script>
 </body>
 
 </html>
