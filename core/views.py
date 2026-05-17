@@ -74,7 +74,6 @@ def dashboard_student(request):
     })
 
 
-@login_required
 class CourseCreateView(CreateView):
     model = Course
     form_class = CourseForm
@@ -84,3 +83,14 @@ class CourseCreateView(CreateView):
     def form_valid(self, form):
         form.instance.teacher = self.request.user
         return super().form_valid(form)
+
+
+@login_required
+def account(request):
+    user = request.user
+
+    print(user)
+
+    return render(request, "core/registration/account.html", {
+        'user': user
+    })
