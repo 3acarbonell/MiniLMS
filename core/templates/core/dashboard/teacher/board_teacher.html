@@ -26,6 +26,21 @@
             --bs-btn-hover-color: #fff;
             --bs-btn-hover-border-color: #1d293d;
         }
+
+        .course-card {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .card-hover-shadow {
+            transition: all 0.3s ease-in-out;
+        }
+
+        .course-card:hover .card-hover-shadow {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23) !important;
+            transform: translateY(-3px);
+        }
     </style>
 </head>
 
@@ -55,12 +70,29 @@
                 </a>
             </div>
 
-            <div>
+
+            <div class="row row-cols-1 row-cols-md-3 g-4">
                 {% for course in courses %}
-                <h5>{{ course.title }}</h5>
-                <p>{{ course.description}}</p>
+                <div class="col">
+                    <div class="card border-dark h-100 card-hover-shadow">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">{{ course.title }}</span>
+                            <span
+                                class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle">
+                                {{ course.student_count }} Alumnos
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">{{ course.description}}</p>
+
+                            <a class="course-card stretched-link" href="{% url 'landing_page:index'%}"></a>
+                        </div>
+                    </div>
+                </div>
                 {% empty %}
-                <p>Aún no has creado ningún curso. ¡Crea el primero!</p>
+                <div class="col-12">
+                    <p class="text-center">Aún no has creado ningún curso. ¡Crea el primero!</p>
+                </div>
                 {% endfor %}
             </div>
         </div>

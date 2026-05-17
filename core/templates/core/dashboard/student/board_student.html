@@ -26,6 +26,17 @@
             --bs-btn-hover-color: #fff;
             --bs-btn-hover-border-color: #1d293d;
         }
+
+        .card-hover-shadow {
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card-hover-shadow:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important;
+            z-index: 10;
+        }
     </style>
 </head>
 
@@ -33,13 +44,47 @@
     {% include 'core/components/navbar.html' %}
 
     <header>
-        <div>
-            <p>{{ user.first_name }} {{ user.last_name }}</p>
-            <span>Panel del {{ user.get_role_display }}</span>
+        <div class="container px-4 py-5">
+            <div class="pb-2 border-bottom">
+                <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+                <span>Panel del {{ user.get_role_display }}</span>
+            </div>
         </div>
     </header>
 
     <main class="flex-grow-1">
+        <div class="container px-4 py-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Mis Cursos</h2>
+            </div>
+
+
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for course in courses %}
+                <div class="col">
+                    <div class="card border-dark h-100 card-hover-shadow">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">{{ course.teacher }}</span>
+                            <span
+                                class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle">
+                                {{ course.student_count }} Alumnos
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <span class="fw-bold">{{ course.title }}</span>
+                            <p class="card-text">{{ course.description}}</p>
+
+                            <a class="course-card stretched-link" href="{% url 'landing_page:index'%}"></a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <p class="text-center">Aún no perteneces a ningún curso</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </main>
 
     <footer class="bg-dark text-white py-4">

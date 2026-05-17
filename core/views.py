@@ -67,7 +67,11 @@ def dashboard_student(request):
     if request.user.role != 'student':
         return redirect('index')
 
-    return render(request, "core/dashboard/student/board_student.html")
+    courses = Course.objects.filter(students=request.user)
+
+    return render(request, "core/dashboard/student/board_student.html", {
+        'courses': courses
+    })
 
 
 class CourseCreateView(CreateView):
