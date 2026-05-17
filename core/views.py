@@ -89,8 +89,6 @@ class CourseCreateView(CreateView):
 def account(request):
     user = request.user
 
-    print(user)
-
     return render(request, "core/registration/account.html", {
         'user': user
     })
