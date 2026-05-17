@@ -21,6 +21,10 @@ class Course(models.Model):
     students = models.ManyToManyField(
         User, related_name='student_of_course', blank=True)
 
+    @property
+    def student_count(self):
+        return self.students.count()
+
     def __str__(self):
         count = self.students.count()
         return f"{self.title} | {self.teacher} | {count} estudiantes"
