@@ -27,19 +27,15 @@
             --bs-btn-hover-border-color: #1d293d;
         }
 
-        .course-card {
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
-
         .card-hover-shadow {
-            transition: all 0.3s ease-in-out;
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .course-card:hover .card-hover-shadow {
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23) !important;
-            transform: translateY(-3px);
+        .card-hover-shadow:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important;
+            z-index: 10;
         }
     </style>
 </head>
@@ -91,7 +87,7 @@
                 </div>
                 {% empty %}
                 <div class="col-12">
-                    <p class="text-center">Aún no has creado ningún curso. ¡Crea el primero!</p>
+                    <p class="text-center">Aún no perteneces creas un curso</p>
                 </div>
                 {% endfor %}
             </div>
