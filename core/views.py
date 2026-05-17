@@ -74,6 +74,7 @@ def dashboard_student(request):
     })
 
 
+@login_required
 class CourseCreateView(CreateView):
     model = Course
     form_class = CourseForm
