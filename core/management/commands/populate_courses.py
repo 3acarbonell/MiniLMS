@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 
 
-from core.models import Course
+from core.models import Course, Section, ContentBlock, Assessment
 
 
 import random
@@ -35,8 +35,37 @@ class Command(BaseCommand):
             )
 
             if created:
+                self.create_course_structure(course)
                 self.stdout.write(self.style.SUCCESS(
                     f'Curso "{title}", Profesor: "{course.teacher}"'))
             else:
                 self.stdout.write(self.style.WARNING(
                     f'Curso: "{title}", Error'))
+
+    def create_course_structure(self, course):
+        for i in range(1, 3):
+            section = Section.objects.create(
+                course=course,
+                title=f'Unidad {i}: Introducción y Fundamentos',
+                order=i
+            )
+
+            ContentBlock.objects.create(
+                section=section,
+                title=f'Lectura obligatoria - {section.title}',
+                content=(
+                    "Este es un texto de ejemplo para la plataforma Mini LMS. "
+                    "Aquí el profesor puede explicar conceptos clave, añadir enlaces "
+                    "o dar instrucciones detalladas sobre la materia actual."
+                )
+            )
+
+            Assessment.objects.create(
+                section=section,
+                title=f'Test de Conocimientos - Unidad {i}',
+                description=f'Evaluación sumativa correspondiente a la {section.title}.',
+                max_score=7.0
+            )
+
+        self.stdout.write(self.style.SUCCESS(
+            f'\t-> Estructura (Secciones/Textos/Tests) generada para {course.title}'))

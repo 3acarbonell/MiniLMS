@@ -1,5 +1,4 @@
-from django.shortcuts import render, redirect
-from .forms import RegisterForm
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
@@ -8,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import CreateView
 
 from .models import Course
-from .forms import CourseForm
+from .forms import CourseForm, RegisterForm
 
 
 # Create your views here.
@@ -91,4 +90,28 @@ def account(request):
 
     return render(request, "core/registration/account.html", {
         'user': user
+    })
+
+
+@login_required
+def course_teacher(request, pk):
+    if request.user.role != 'teacher':
+        return redirect('core:dashboard_teacher')
+
+    course = get_object_or_404(Course, pk=pk)
+
+    return render(request, "core/course/teacher/course.html", {
+        'course': course
+    })
+
+
+@login_required
+def course_student(request, pk):
+    if request.user.role != 'student':
+        return redirect('core:dashboard_student')
+
+    course = get_object_or_404(Course, pk=pk)
+
+    return render(request, "core/course/student/course.html", {
+        'course': course
     })
