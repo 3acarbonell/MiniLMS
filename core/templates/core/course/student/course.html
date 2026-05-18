@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Profesor</title>
+    <title>{{ course.title }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <style>
@@ -27,17 +27,6 @@
             --bs-btn-hover-border-color: #1d293d;
         }
 
-        .card-hover-shadow {
-            position: relative;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .card-hover-shadow:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important;
-            z-index: 10;
-        }
-
         .nav-user-link img {
             object-fit: cover;
             display: block;
@@ -56,52 +45,30 @@
     <header>
         <div class="container px-4 py-5">
             <div class="pb-2 border-bottom">
-                <h2>{{ user.first_name }} {{ user.last_name }}</h2>
-                <span>Panel del {{ user.get_role_display }}</span>
+                <h2>{{ course.title }}</h2>
+                <h4>{{ course.description }}</h4>
             </div>
+
+            {% for section in course.sections.all %}
+            <div>
+                <h5>{{ section.title }}</h5>
+
+                {% for content in section.contents.all %}
+                <div>{{ content.content | linebreaks }}</div>
+                {% endfor %}
+
+                {% for exam in section.assessments.all %}
+                <div>
+                    <strong>Evaluacion: </strong> {{exam.title}}
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
         </div>
     </header>
 
     <main class="flex-grow-1">
-        <div class="container px-4 py-5">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>Mis Cursos</h2>
-                <a href="{% url 'core:course_form' %}" class="btn btn-success d-flex align-items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                    </svg>
-                    Crear Curso
-                </a>
-            </div>
 
-
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                {% for course in courses %}
-                <div class="col">
-                    <div class="card border-dark h-100 card-hover-shadow">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <span class="fw-bold">{{ course.title }}</span>
-                            <span
-                                class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle">
-                                {{ course.student_count }} Alumnos
-                            </span>
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text">{{ course.description}}</p>
-
-                            <a class="course-card stretched-link" href="{% url 'core:course_teacher' course.pk %}"></a>
-                        </div>
-                    </div>
-                </div>
-                {% empty %}
-                <div class="col-12">
-                    <p class="text-center">Aún no perteneces creas un curso</p>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
     </main>
 
     <footer class="bg-dark text-white py-4">
@@ -118,6 +85,7 @@
                 </svg>
                 <span class="fw-bold text-truncate">Mini LMS</span>
             </div>
+
 
             <div>
                 <p class="mb-0 small text-white-50">
