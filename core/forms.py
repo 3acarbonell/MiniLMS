@@ -2,8 +2,9 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 
+
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Row, Column, Submit
+from crispy_forms.layout import Layout, Row, Column, Submit, Div, Field, HTML
 
 
 from .models import User, Course
@@ -44,11 +45,17 @@ class CourseForm(forms.ModelForm):
             'description': 'Descripción',
             'students': 'Seleccionar alumnos',
         }
+        widgets = {
+            'description': forms.Textarea(attrs={'row': 3, 'class': 'form-control'}),
+            'students': forms.CheckboxSelectMultiple()
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.fields['students'].queryset = get_user_model(
         ).objects.filter(role='student')
-
         self.fields['students'].required = False
+
+        for field in ['title', 'description']:
+            self.fields[field].widget.attrs.update({'class': 'form-control'})

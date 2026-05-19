@@ -1,5 +1,4 @@
 {% load static %}
-{% load crispy_forms_tags %}
 <!DOCTYPE html>
 <html lang="es">
 
@@ -45,6 +44,53 @@
             background-color: rgba(29, 41, 61, 0.05);
             color: #1d293d;
         }
+
+        #div_id_students .form-check {
+            padding: 8px 12px;
+            margin-bottom: 5px;
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+        }
+
+        #div_id_students label {
+            width: 100%;
+            cursor: pointer;
+        }
+
+        #div_id_students input {
+            margin-right: 10px;
+        }
+
+        .students-scroll-container legend {
+            display: none;
+        }
+
+        .students-scroll-container fieldset {
+            border: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .students-scroll-container .form-check {
+            display: flex;
+            align-items: center;
+            padding-left: 0;
+            margin-bottom: 5px;
+        }
+
+        .students-scroll-container .form-check-input {
+            margin-top: 0;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .students-scroll-container .form-check-label {
+            cursor: pointer;
+            font-size: 0.95rem;
+            line-height: 1;
+            margin-bottom: 0;
+        }
     </style>
 </head>
 
@@ -57,14 +103,24 @@
                 <h4 class="mb-0">Crear Nuevo Curso</h4>
             </div>
 
-            <form method="POST">
-
+            <form method="POST" class="mt-4">
                 {% csrf_token %}
-                {{ form|crispy }}
+                {% load crispy_forms_tags %}
+
+                {{ form.title|as_crispy_field }}
+                {{ form.description|as_crispy_field }}
+
+                <div class="mb-3">
+                    <label class="fw-bold mb-2">{{ form.students.label }}</label>
+                    <div class="border rounded p-3 bg-light students-scroll-container"
+                        style="max-height: 250px; overflow-y: auto;">
+                        {{ form.students|as_crispy_field }}
+                    </div>
+                </div>
 
                 <div class="d-flex gap-2 mt-4">
-                    <button type="submit" class="btn btn-primary">
-                        Publicar
+                    <button type="submit" class="btn btn-success w-100">
+                        Publicar Curso
                     </button>
                 </div>
             </form>
