@@ -13,6 +13,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         teachers = get_user_model().objects.filter(role='teacher')
+        students = get_user_model().objects.filter(role='student')
 
         if not teachers.exists():
             self.stdout.write(self.style.ERROR('Sin profesores'))
@@ -36,14 +37,21 @@ class Command(BaseCommand):
 
             if created:
                 self.create_course_structure(course)
+
+                if students.exists():
+                    count = min(students.count(), random.randint(3, 8))
+                    sampled_students = random.sample(list(students), count)
+
+                    course.students.set(sampled_students)
+
                 self.stdout.write(self.style.SUCCESS(
-                    f'Curso "{title}", Profesor: "{course.teacher}"'))
+                    f'Curso "{title}", Profesor: "{course.teacher}", Alumnos: {course.students.count()}'))
             else:
                 self.stdout.write(self.style.WARNING(
                     f'Curso: "{title}", Error'))
 
     def create_course_structure(self, course):
-        for i in range(1, 3):
+        for i in range(1, 7):
             section = Section.objects.create(
                 course=course,
                 title=f'Unidad {i}: Introducción y Fundamentos',

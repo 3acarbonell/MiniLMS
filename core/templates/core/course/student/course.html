@@ -36,6 +36,35 @@
             background-color: rgba(29, 41, 61, 0.05);
             color: #1d293d;
         }
+
+        .btn-section-course:not(.collapsed) {
+            background-color: #1d293d !important;
+            color: #fff !important;
+            border-color: #1d293d !important;
+        }
+
+
+        .btn-section-course:not(.collapsed) span,
+        .btn-section-course:not(.collapsed) {
+            color: #fff !important;
+        }
+
+        .custom-list-item {
+            transition: all 0.2s ease;
+            color: #495057;
+            border-left: 3px solid transparent !important;
+        }
+
+        .custom-list-item:hover {
+            background-color: #f8f9fa;
+            color: #1d293d;
+            border-left: 3px solid #1d293d !important;
+            padding-left: 1.75rem !important;
+        }
+
+        a.list-group-item {
+            text-decoration: none;
+        }
     </style>
 </head>
 
@@ -48,27 +77,44 @@
                 <h2>{{ course.title }}</h2>
                 <h4>{{ course.description }}</h4>
             </div>
-
-            {% for section in course.sections.all %}
-            <div>
-                <h5>{{ section.title }}</h5>
-
-                {% for content in section.contents.all %}
-                <div>{{ content.content | linebreaks }}</div>
-                {% endfor %}
-
-                {% for exam in section.assessments.all %}
-                <div>
-                    <strong>Evaluacion: </strong> {{exam.title}}
-                </div>
-                {% endfor %}
-            </div>
-            {% endfor %}
         </div>
     </header>
 
-    <main class="flex-grow-1">
+    <main class=" flex-grow-1">
+        <div class="container">
+            {% for section in course.sections.all %}
+            <div class="mb-2">
+                <button
+                    class="btn btn-outline-dark btn-section-course no-caret w-100 text-start d-flex justify-content-between align-items-center"
+                    type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ section.id }}">
+                    {{ section.title }}
+                </button>
 
+                <div class="collapse shadow-sm" id="collapse-{{ section.id }}">
+                    <ul class="list-group">
+                        <li class="list-group-item bg-light border-top-0">
+                            <h6 class="dropdown-header px-0">Contenidos</h6>
+                        </li>
+
+                        {% for content in section.contents.all %}
+                        <a class="list-group-item list-group-item-action ps-4 border-start border-end custom-list-item">
+                            {{ content.title }}</a>
+                        {% endfor %}
+
+                        <li class="list-group-item bg-light">
+                            <h6 class="dropdown-header px-0">Evaluaciones</h6>
+                        </li>
+
+                        {% for exam in section.assessments.all %}
+                        <a class="list-group-item list-group-item-action ps-4 border-start border-end custom-list-item">
+                            <strong>Evaluación: </strong> {{ exam.title }}
+                        </a>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </main>
 
     <footer class="bg-dark text-white py-4">

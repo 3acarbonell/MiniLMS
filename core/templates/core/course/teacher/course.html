@@ -48,6 +48,23 @@
         .btn-section-course:not(.collapsed) {
             color: #fff !important;
         }
+
+        .custom-list-item {
+            transition: all 0.2s ease;
+            color: #495057;
+            border-left: 3px solid transparent !important;
+        }
+
+        .custom-list-item:hover {
+            background-color: #f8f9fa;
+            color: #1d293d;
+            border-left: 3px solid #1d293d !important;
+            padding-left: 1.75rem !important;
+        }
+
+        a.list-group-item {
+            text-decoration: none;
+        }
     </style>
 </head>
 
@@ -57,8 +74,17 @@
     <header>
         <div class="container px-4 py-5">
             <div class="pb-2 border-bottom">
-                <h2>{{ course.title }}</h2>
-                <h4>{{ course.description }}</h4>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2>{{ course.title }}</h2>
+                    <a href="" class="btn btn-outline-dark btn-sm d-flex align-items-center">Editar</a>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4>{{ course.description }}</h4>
+                    <span
+                        class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle">
+                        {{ course.student_count }} Alumnos
+                    </span>
+                </div>
             </div>
         </div>
     </header>
@@ -80,7 +106,8 @@
                         </li>
 
                         {% for content in section.contents.all %}
-                        <li class="list-group-item ps-4 border-start border-end">{{ content.title }}</li>
+                        <a class="list-group-item list-group-item-action ps-4 border-start border-end custom-list-item">
+                            {{ content.title }}</a>
                         {% endfor %}
 
                         <li class="list-group-item bg-light">
@@ -88,9 +115,9 @@
                         </li>
 
                         {% for exam in section.assessments.all %}
-                        <li class="list-group-item ps-4 border-start border-end">
+                        <a class="list-group-item list-group-item-action ps-4 border-start border-end custom-list-item">
                             <strong>Evaluación: </strong> {{ exam.title }}
-                        </li>
+                        </a>
                         {% endfor %}
                     </ul>
                 </div>

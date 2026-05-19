@@ -84,7 +84,7 @@
                             <span class="fw-bold">{{ course.title }}</span>
                             <p class="card-text">{{ course.description}}</p>
 
-                            <a class="course-card stretched-link" href="{% url 'landing_page:index'%}"></a>
+                            <a class="course-card stretched-link" href="{% url 'core:course_student' course.pk %}"></a>
                         </div>
                     </div>
                 </div>
