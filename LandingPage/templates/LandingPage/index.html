@@ -65,6 +65,10 @@
             background-color: rgba(29, 41, 61, 0.05);
             color: #1d293d;
         }
+
+        p {
+            font-weight: 500;
+        }
     </style>
 </head>
 
@@ -86,7 +90,7 @@
                     <div class="col-12 col-md-4">
                         <div class="card text-start p-4 shadow-sm h-100">
                             <div class="card-body">
-                                <div class="d-flex align-items-center justify-content-center mb-3">
+                                <div class="d-flex align-items-center justify-content-start mb-3">
                                     <img src="{% static 'LandingPage/check.svg' %}" width="60" height="54">
                                     <h5 class="card-title mb-0">Gestión de Cursos</h5>
                                 </div>
@@ -100,7 +104,7 @@
                     <div class="col-12 col-md-4">
                         <div class="card text-start p-4 shadow-sm h-100">
                             <div class="card-body">
-                                <div class="d-flex align-items-center justify-content-center mb-3">
+                                <div class="d-flex align-items-center justify-content-start mb-3">
                                     <img src="{% static 'LandingPage/users.svg' %}" width="60" height="54">
                                     <h5 class="card-title mb-0">Administración de Estudiantes</h5>
                                 </div>
@@ -113,12 +117,9 @@
                     <div class="col-12 col-md-4">
                         <div class="card text-start p-4 shadow-sm h-100">
                             <div class="card-body">
-                                <div class="d-flex align-items-center justify-content-center mb-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
-                                        class="me-2" viewBox="0 0 16 16">
-                                        <path
-                                            d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.354 5.646a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7 9.293l3.646-3.647a.5.5 0 0 1 .708 0z" />
-                                    </svg>
+                                <div class="d-flex align-items-center justify-content-start mb-3">
+                                    <img src="{% static 'LandingPage/file.svg' %}" width="60" height="54">
+
                                     <h5 class="card-title mb-0">Contenido Diverso</h5>
                                 </div>
                                 <p class="card-text text-muted">
@@ -131,7 +132,7 @@
                     <div class="col-12 col-md-4">
                         <div class="card text-start p-4 shadow-sm h-100">
                             <div class="card-body">
-                                <div class="d-flex align-items-center justify-content-center mb-3">
+                                <div class="d-flex align-items-center justify-content-start mb-3">
                                     <img src="{% static 'LandingPage/tick.svg' %}" width="60" height="54">
                                     <h5 class="card-title mb-0">Evaluaciones Interactivas</h5>
                                 </div>
@@ -145,12 +146,9 @@
                     <div class="col-12 col-md-4">
                         <div class="card text-start p-4 shadow-sm h-100">
                             <div class="card-body">
-                                <div class="d-flex align-items-center justify-content-center mb-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
-                                        class="me-2" viewBox="0 0 16 16">
-                                        <path
-                                            d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.354 5.646a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7 9.293l3.646-3.647a.5.5 0 0 1 .708 0z" />
-                                    </svg>
+                                <div class="d-flex align-items-center justify-content-start mb-3">
+                                    <img src="{% static 'LandingPage/layout.svg' %}" width="60" height="54">
+
                                     <h5 class="card-title mb-0">Interfaz Intuitiva</h5>
                                 </div>
                                 <p class="card-text text-muted">
@@ -163,12 +161,9 @@
                     <div class="col-12 col-md-4">
                         <div class="card text-start p-4 shadow-sm h-100">
                             <div class="card-body">
-                                <div class="d-flex align-items-center justify-content-center mb-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
-                                        class="me-2" viewBox="0 0 16 16">
-                                        <path
-                                            d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.354 5.646a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7 9.293l3.646-3.647a.5.5 0 0 1 .708 0z" />
-                                    </svg>
+                                <div class="d-flex align-items-center justify-content-start mb-3">
+                                    <img src="{% static 'LandingPage/chart.svg' %}" width="60" height="54">
+
                                     <h5 class="card-title mb-0">Seguimiento de Progreso</h5>
                                 </div>
                                 <p class="card-text text-muted">
@@ -216,7 +211,7 @@
                             <div>
                                 <h5 class="mb-1">Añade Estudiantes y Contenido</h5>
                                 <p class="text-muted mb-0">
-                                    Crea cuentas para tus estudiantes, inscríbelos en tus cursos.
+                                    Crea cuentas para tus estudiantes e inscríbelos en tus cursos.
                                 </p>
                             </div>
                         </li>
