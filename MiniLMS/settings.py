@@ -38,6 +38,8 @@ if RENDER_EXTERNAL_HOSTNAME:
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -78,7 +80,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'MiniLMS.wsgi.application'
+ASGI_APPLICATION = 'MiniLMS.asgi.application'
 
 
 # Database
@@ -155,3 +157,9 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 LOGIN_REDIRECT_URL = 'LandingPage:index'
 LOGOUT_REDIRECT_URL = 'core:login'
 LOGIN_URL = 'core:login'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
