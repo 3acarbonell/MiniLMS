@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import CreateView
 
 from .models import Course
-from .forms import CourseForm, RegisterForm
+from .forms import AssessmentForm, CourseForm, RegisterForm, SectionForm, ContentBlockForm
 
 
 # Create your views here.
@@ -114,4 +114,43 @@ def course_student(request, pk):
 
     return render(request, "core/course/student/course.html", {
         'course': course
+    })
+
+
+@login_required
+def course_teacher_edit(request, pk):
+    if request.user.role != 'teacher':
+        return redirect('core:dashboard_teacher')
+
+    course = get_object_or_404(Course, pk=pk)
+
+    if request.method == 'POST':
+        section_form = SectionForm(request.POST)
+        content_form = ContentBlockForm(request.POST)
+        assessment_form = AssessmentForm(request.POST)
+
+        if section_form.is_valid() and content_form.is_valid() and assessment_form.is_valid():
+            section = section_form.save(commit=False)
+            section.course = course
+            section.save()
+
+            content = content_form.save(commit=False)
+            content.section = section
+            content.save()
+
+            assessment = assessment_form.save(commit=False)
+            assessment.section = section
+            assessment.save()
+
+            return redirect('core:course_teacher', pk=pk)
+    else:
+        section_form = SectionForm()
+        content_form = ContentBlockForm()
+        assessment_form = AssessmentForm()
+
+    return render(request, "core/course/teacher/course_edit.html", {
+        'course': course,
+        'section_form': section_form,
+        'content_form': content_form,
+        'assessment_form': assessment_form,
     })

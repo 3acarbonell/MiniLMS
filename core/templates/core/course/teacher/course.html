@@ -297,7 +297,8 @@
                         <div class="pb-2 border-bottom">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h2>{{ course.title }}</h2>
-                                <a href="" class="btn btn-outline-dark btn-sm d-flex align-items-center">Editar</a>
+                                <a href="{% url 'core:course_teacher_edit' course.pk %}"
+                                    class="btn btn-outline-dark btn-sm d-flex align-items-center">Editar</a>
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
                                 <h4>{{ course.description }}</h4>
@@ -401,7 +402,6 @@
 
             if (btnToggle) {
                 btnToggle.addEventListener('click', () => {
-                    // Verificamos si el chat está oculto usando la clase de Bootstra
                     if (colChat.classList.contains('d-none')) {
                         colChat.classList.remove('d-none');
                         colCentral.className = "col-7 d-flex flex-column border-end";
