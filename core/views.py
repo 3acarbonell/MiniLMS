@@ -118,5 +118,5 @@ def course_student(request, pk):
 
 
 @login_required
-def course_chat(request):
-    return render(request, "core/dashboard/chat/chat.html")
+def course_board(request):
+    return render(request, "core/dashboard/board/board.html")

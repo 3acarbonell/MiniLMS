@@ -11,7 +11,8 @@ import django
 
 from django.core.asgi import get_asgi_application
 
-from core.templates.core.dashboard.chat.chat import ChatConsumer
+from core.templates.core.dashboard.board.board import BoardConsumer
+from core.templates.core.course.chat.chat import ChatConsumer
 from django.urls import re_path
 from channels.security.websocket import AllowedHostsOriginValidator
 from channels.auth import AuthMiddlewareStack
@@ -27,7 +28,8 @@ application = ProtocolTypeRouter({
     "websocket": AllowedHostsOriginValidator(
         AuthMiddlewareStack(
             URLRouter([
-                re_path('ws/chat/', ChatConsumer.as_asgi())
+                re_path('ws/chat/', ChatConsumer.as_asgi()),
+                re_path('ws/board/', BoardConsumer.as_asgi())
             ])
         )
     )
