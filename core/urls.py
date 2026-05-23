@@ -16,6 +16,5 @@ urlpatterns = [
          name='course_form'),
     path('student/dashboard/', views.dashboard_student, name='dashboard_student'),
     path('course/teacher/<int:pk>', views.course_teacher, name='course_teacher'),
-    path('course/student/<int:pk>', views.course_student, name='course_student'),
-    path('course_board/', views.course_board, name='course_board')
+    path('course/student/<int:pk>', views.course_student, name='course_student')
 ]

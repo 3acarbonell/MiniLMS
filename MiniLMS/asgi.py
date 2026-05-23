@@ -11,8 +11,8 @@ import django
 
 from django.core.asgi import get_asgi_application
 
-from core.templates.core.dashboard.board.board import BoardConsumer
-from core.templates.core.course.chat.chat import ChatConsumer
+from Board.consumer import BoardConsumer
+from Chat.consumers import ChatConsumer
 from django.urls import re_path
 from channels.security.websocket import AllowedHostsOriginValidator
 from channels.auth import AuthMiddlewareStack

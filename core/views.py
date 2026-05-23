@@ -115,8 +115,3 @@ def course_student(request, pk):
     return render(request, "core/course/student/course.html", {
         'course': course
     })
-
-
-@login_required
-def course_board(request):
-    return render(request, "core/dashboard/board/board.html")
