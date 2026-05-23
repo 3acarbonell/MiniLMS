@@ -53,74 +53,62 @@
 <body class="d-flex flex-column min-vh-100">
     {% include 'core/components/navbar.html' %}
 
-    <header>
-        <div class="container px-4 py-5">
-            <div class="pb-2 border-bottom">
-                <h2>{{ user.first_name }} {{ user.last_name }}</h2>
-                <span>Panel del {{ user.get_role_display }}</span>
-            </div>
-        </div>
-    </header>
+    <div class="container-fluid flex-grow-1">
+        <div class="row g-0 h-100">
 
-    <main class="flex-grow-1">
-        <div class="container px-4 py-5">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>Mis Cursos</h2>
+            <div class="col-2 border-end col-left-spacer d-none d-md-block">
             </div>
 
-
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                {% for course in courses %}
-                <div class="col">
-                    <div class="card border-dark h-100 card-hover-shadow">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <span class="fw-bold">{{ course.teacher }}</span>
-                            <span
-                                class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle">
-                                {{ course.student_count }} Alumnos
-                            </span>
-                        </div>
-                        <div class="card-body">
-                            <span class="fw-bold">{{ course.title }}</span>
-                            <p class="card-text">{{ course.description}}</p>
-
-                            <a class="course-card stretched-link" href="{% url 'core:course_student' course.pk %}"></a>
+            <div class="col-6 d-flex flex-column border-end">
+                <header>
+                    <div class="container px-4 py-5">
+                        <div class="pb-2 border-bottom">
+                            <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+                            <span>Panel del {{ user.get_role_display }}</span>
                         </div>
                     </div>
-                </div>
-                {% empty %}
-                <div class="col-12">
-                    <p class="text-center">Aún no perteneces a ningún curso</p>
-                </div>
-                {% endfor %}
+                </header>
+
+                <main class="px-4 py-5">
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>Mis Cursos</h2>
+                    </div>
+
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        {% for course in courses %}
+                        <div class="col">
+                            <div class="card border-dark h-100 card-hover-shadow">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold">{{ course.teacher }}</span>
+                                    <span
+                                        class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle">
+                                        {{ course.student_count }} Alumnos
+                                    </span>
+                                </div>
+                                <div class="card-body">
+                                    <span class="fw-bold">{{ course.title }}</span>
+                                    <p class="card-text">{{ course.description}}</p>
+
+                                    <a class="course-card stretched-link"
+                                        href="{% url 'core:course_student' course.pk %}"></a>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="col-12">
+                            <p class="text-center">Aún no perteneces a ningún curso</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </main>
             </div>
+
+
         </div>
-    </main>
+    </div>
 
-    <footer class="bg-dark text-white py-4">
-        <div class="container text-center">
-            <div class="d-flex justify-content-center align-items-center mb-3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="44" viewBox="0 0 24 24" fill="none"
-                    stroke="#ffffff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-graduation-cap" x="56" y="56">
-                    <path
-                        d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z">
-                    </path>
-                    <path d="M22 10v6"></path>
-                    <path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"></path>
-                </svg>
-                <span class="fw-bold text-truncate">Mini LMS</span>
-            </div>
-
-
-            <div>
-                <p class="mb-0 small text-white-50">
-                    Plataforma educativa diseñada para facilitar el aprendizaje
-                </p>
-            </div>
-
-        </div>
-    </footer>
+    {% include 'core/components/footer.html' %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
