@@ -1,3 +1,5 @@
+{% load crispy_forms_tags %}
+{% load crispy_forms_utils %}
 <!DOCTYPE html>
 <html lang="es">
 
@@ -7,6 +9,7 @@
     <title>{{ course.title }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         .btn-login {
             --bs-btn-bg: #fff;
@@ -39,6 +42,16 @@
         .asteriskField {
             display: none;
         }
+
+        .edit-icon {
+            cursor: pointer;
+            color: #6c757d;
+            transition: color 0.2s;
+        }
+
+        .edit-icon:hover {
+            color: #0d6efd;
+        }
     </style>
 </head>
 
@@ -54,40 +67,206 @@
                 <main class="px-4 py-5">
                     <div class="row justify-content-center">
                         <div class="col-lg-8">
-                            <div class="card shadow-sm">
-                                <div class="card-header bg-dark text-white p-3">
-                                    <h4 class="mb-0">Añadir Contenido a: {{ course.title }}</h4>
-                                </div>
-                                <div class="card-body p-4">
-                                    <form method="POST">
-                                        {% csrf_token %}
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h2>Gestion de Contenido: {{ course.title }}</h2>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSection">+
+                                    Añadir</button>
+                            </div>
 
-                                        <h4 class="text-primary mb-3">1. Datos de la Sección</h4>
-                                        {% load crispy_forms_tags %}
-                                        {% crispy section_form %}
+                            <div class="accordion" id="courseAccordion">
+                                {% for section in course.sections.all %}
+                                <div class="accordion-item mb-3 border shadow-sm">
+                                    <h2 class="accordion-header d-flex align-items-center bg-white border-bottom">
+                                        <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}"
+                                            type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#sec-{{ section.id }}">
+                                            <span class="badge bg-dark me-2">{{ section.order }}</span>
+                                            <strong>{{ section.title }}</strong>
+                                        </button>
+                                        <div class="d-flex align-items-center pe-3">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16"
+                                                data-bs-toggle="modal" data-bs-target="#modalSection"
+                                                data-id="{{ section.id }}" data-title="{{ section.title }}"
+                                                data-order="{{ section.order }}">
+                                                <path
+                                                    d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                                <path fill-rule="evenodd"
+                                                    d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+                                            </svg>
 
-                                        <hr class="my-4">
-
-                                        <h4 class="text-primary mb-3">2. Material de Estudio</h4>
-                                        {% crispy content_form %}
-
-                                        <hr class="my-4">
-
-                                        <h4 class="text-primary mb-3">3. Evaluación</h4>
-                                        {% crispy assessment_form %}
-
-                                        <div class="d-grid gap-2 mt-5">
-                                            <button type="submit" class="btn btn-success btn-lg">
-                                                Guardar Todo el Contenido
-                                            </button>
-                                            <a href="{% url 'core:dashboard_teacher' %}"
-                                                class="btn btn-outline-secondary">
-                                                Cancelar
-                                            </a>
+                                            <form action="{% url 'core:course_teacher_delete' 'section' section.id %}"
+                                                method="POST"
+                                                onsubmit="return confirm('¿Eliminar esta sección y todo su contenido?');"
+                                                class="d-inline align-items-center">
+                                                {% csrf_token %}
+                                                <button type="submit"
+                                                    class="btn btn-link text-danger p-0 shadow-none d-flex align-items-center"
+                                                    style="line-height: 1;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                        fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                        <path
+                                                            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                                                        <path
+                                                            d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                                                    </svg>
+                                                </button>
+                                            </form>
                                         </div>
-                                    </form>
+                                    </h2>
+                                    <div id="sec-{{ section.id }}"
+                                        class="accordion-collapse collapse {% if forloop.first %}show{% endif %}"
+                                        data-bs-parent="#courseAccordion">
+                                        <div class="accordion-body bg-light">
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <h6>Material de Estudio</h6>
+                                                        <button class="btn btn-sm btn-outline-secondary btn-add-block"
+                                                            data-section-id="{{ section.id }}" data-bs-toggle="modal"
+                                                            data-bs-target="#modalBlock">
+                                                            + Texto
+                                                        </button>
+                                                    </div>
+                                                    {% for block in section.contents.all %}
+                                                    <div class="mb-2 p-2 shadow-sm border-0">
+                                                        <small class="fw-bold">{{ block.title }}</small>
+                                                        <div class="d-flex align-items-center">
+                                                            <i class="bi bi-pencil edit-icon sm" data-bs-toggle="modal"
+                                                                data-bs-target="#modalBlock" data-id="{{ block.id }}"
+                                                                data-section="{{ section.id }}"
+                                                                data-title="{{ block.title }}"
+                                                                data-content="{{ block.content }}"></i>
+
+                                                            <form
+                                                                action="{% url 'core:course_teacher_delete' 'block' block.id %}"
+                                                                method="POST"
+                                                                onsubmit="return confirm('¿Eliminar este material?');"
+                                                                style="display:inline;">
+                                                                {% csrf_token %}
+                                                                <button type="submit"
+                                                                    class="btn btn-link text-danger p-0"><i
+                                                                        class="bi bi-trash"></i></button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                    {% empty %}
+                                                    <p class="text-muted small">Sin material de lectura.</p>
+                                                    {% endfor %}
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <h6>Evaluaciones</h6>
+                                                        <button class="btn btn-sm btn-outline-secondary btn-add-asmt"
+                                                            data-section-id="{{ section.id }}" data-bs-toggle="modal"
+                                                            data-bs-target="#modalAsmt">
+                                                            + Test
+                                                        </button>
+                                                    </div>
+                                                    {% for asmt in section.assessments.all %}
+                                                    <div
+                                                        class="mb-2 p-2 shadow-sm border-0 border-start border-warning border-4">
+                                                        <small class="fw-bold">{{ asmt.title }} ({{ asmt.max_score }}
+                                                            pts)</small>
+
+                                                        <div class="d-flex align-items-center">
+                                                            <i class="bi bi-pencil edit-icon sm" data-bs-toggle="modal"
+                                                                data-bs-target="#modalAsmt" data-id="{{ asmt.id }}"
+                                                                data-section="{{ section.id }}"
+                                                                data-title="{{ asmt.title }}"
+                                                                data-score="{{ asmt.max_score }}"></i>
+
+                                                            <form
+                                                                action="{% url 'core:course_teacher_delete' 'assessment' asmt.id %}"
+                                                                method="POST"
+                                                                onsubmit="return confirm('¿Eliminar esta evaluación?');"
+                                                                style="display:inline;">
+                                                                {% csrf_token %}
+                                                                <button type="submit"
+                                                                    class="btn btn-link text-danger p-0"><i
+                                                                        class="bi bi-trash"></i></button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                    {% empty %}
+                                                    <p class="text-muted small">Sin evaluaciones asignadas.</p>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="modal fade" id="modalSection" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="section_id" id="edit_section_id">
+                                            <div class="modal-header">
+                                                <h5 id="sectionModalTitle">Nueva Sección</h5>
+                                            </div>
+                                            <div class="modal-body">
+                                                {% crispy section_form %}
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" name="save_section"
+                                                    class="btn btn-primary">Guardar</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
+
+                            <div class="modal fade" id="modalBlock" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="block_id" id="edit_block_id">
+                                            <input type="hidden" name="section_id" id="hidden_section_id_block">
+                                            <div class="modal-header">
+                                                <h5 id="blockModalTitle">Material de Estudio</h5>
+                                            </div>
+                                            <div class="modal-body">
+                                                {% crispy block_form %}
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" name="save_block"
+                                                    class="btn btn-primary">Guardar</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="modalAsmt" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="asmt_id" id="edit_asmt_id">
+                                            <input type="hidden" name="section_id" id="hidden_section_id_asmt">
+                                            <div class="modal-header">
+                                                <h5 id="asmtModalTitle">Evaluación</h5>
+                                            </div>
+                                            <div class="modal-body">
+                                                {% crispy assessment_form %}
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" name="save_asmt"
+                                                    class="btn btn-warning">Guardar</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </main>
@@ -101,6 +280,70 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const modalSection = document.getElementById('modalSection');
+            modalSection.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const idInput = document.getElementById('edit_section_id');
+
+                if (button.hasAttribute('data-id')) {
+                    document.getElementById('sectionModalTitle').innerText = "Editar Sección";
+                    idInput.value = button.getAttribute('data-id');
+                    modalSection.querySelector('input[name="title"]').value = button.getAttribute('data-title');
+                    modalSection.querySelector('input[name="order"]').value = button.getAttribute('data-order');
+                } else {
+                    idInput.value = "";
+                    modalSection.querySelector('form').reset();
+                    document.getElementById('sectionModalTitle').innerText = "Nueva Sección";
+                }
+            });
+
+            const modalBlock = document.getElementById('modalBlock');
+            modalBlock.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const idInput = document.getElementById('edit_block_id');
+
+                const sectionId = button.getAttribute('data-section-id') || button.getAttribute('data-section');
+                document.getElementById('hidden_section_id_block').value = sectionId;
+
+                if (button.hasAttribute('data-id')) {
+                    document.getElementById('blockModalTitle').innerText = "Editar Bloque de Texto";
+                    idInput.value = button.getAttribute('data-id');
+                    modalBlock.querySelector('input[name="title"]').value = button.getAttribute('data-title');
+                    modalBlock.querySelector('textarea[name="content"]').value = button.getAttribute('data-content');
+                } else {
+                    idInput.value = "";
+                    modalBlock.querySelector('form').reset();
+                    document.getElementById('hidden_section_id_block').value = sectionId;
+                    document.getElementById('blockModalTitle').innerText = "Material de Estudio";
+                }
+            });
+
+            const modalAsmt = document.getElementById('modalAsmt');
+            modalAsmt.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const idInput = document.getElementById('edit_asmt_id');
+
+                const sectionId = button.getAttribute('data-section-id') || button.getAttribute('data-section');
+                document.getElementById('hidden_section_id_asmt').value = sectionId;
+
+                if (button.hasAttribute('data-id')) {
+                    document.getElementById('asmtModalTitle').innerText = "Editar Evaluación";
+                    idInput.value = button.getAttribute('data-id');
+                    modalAsmt.querySelector('input[name="title"]').value = button.getAttribute('data-title');
+                    modalAsmt.querySelector('input[name="max_score"]').value = button.getAttribute('data-score');
+                } else {
+                    idInput.value = "";
+                    modalAsmt.querySelector('form').reset();
+                    document.getElementById('hidden_section_id_asmt').value = sectionId;
+                    document.getElementById('asmtModalTitle').innerText = "Evaluación";
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

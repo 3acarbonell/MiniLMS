@@ -5,8 +5,9 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import CreateView
+from django.db.models import Prefetch
 
-from .models import Course
+from .models import Course, Section, ContentBlock, Assessment
 from .forms import AssessmentForm, CourseForm, RegisterForm, SectionForm, ContentBlockForm
 
 
@@ -118,39 +119,94 @@ def course_student(request, pk):
 
 
 @login_required
-def course_teacher_edit(request, pk):
+def course_teacher_edit(request, course_id):
     if request.user.role != 'teacher':
         return redirect('core:dashboard_teacher')
 
-    course = get_object_or_404(Course, pk=pk)
+    course = get_object_or_404(Course, id=course_id)
 
     if request.method == 'POST':
-        section_form = SectionForm(request.POST)
-        content_form = ContentBlockForm(request.POST)
-        assessment_form = AssessmentForm(request.POST)
+        if 'save_section' in request.POST:
+            section_id = request.POST.get('section_id')
+            instance = None
 
-        if section_form.is_valid() and content_form.is_valid() and assessment_form.is_valid():
-            section = section_form.save(commit=False)
-            section.course = course
-            section.save()
+            if section_id and section_id.strip():
+                instance = get_object_or_404(Section, id=section_id)
 
-            content = content_form.save(commit=False)
-            content.section = section
-            content.save()
+            form = SectionForm(request.POST, instance=instance)
+            if form.is_valid():
+                section = form.save(commit=False)
+                section.course = course
+                section.save()
+                return redirect('core:course_teacher_edit', course_id=course.id)
 
-            assessment = assessment_form.save(commit=False)
-            assessment.section = section
-            assessment.save()
+        elif 'save_block' in request.POST:
+            block_id = request.POST.get('block_id')
+            section_id = request.POST.get('section_id')
 
-            return redirect('core:course_teacher', pk=pk)
-    else:
-        section_form = SectionForm()
-        content_form = ContentBlockForm()
-        assessment_form = AssessmentForm()
+            instance = None
+            if block_id and block_id.strip():
+                instance = get_object_or_404(ContentBlock, id=block_id)
 
-    return render(request, "core/course/teacher/course_edit.html", {
+            form = ContentBlockForm(request.POST, instance=instance)
+            if form.is_valid():
+                block = form.save(commit=False)
+                block.section = get_object_or_404(Section, id=section_id)
+                block.save()
+                return redirect('core:course_teacher_edit', course_id=course.id)
+
+        elif 'save_asmt' in request.POST:
+            asmt_id = request.POST.get('asmt_id')
+            section_id = request.POST.get('section_id')
+
+            instance = None
+            if asmt_id and asmt_id.strip():
+                instance = get_object_or_404(Assessment, id=asmt_id)
+
+            form = AssessmentForm(request.POST, instance=instance)
+            if form.is_valid():
+                asmt = form.save(commit=False)
+                asmt.section = get_object_or_404(Section, id=section_id)
+                asmt.save()
+                return redirect('core:course_teacher_edit', course_id=course.id)
+
+    context = {
         'course': course,
-        'section_form': section_form,
-        'content_form': content_form,
-        'assessment_form': assessment_form,
-    })
+        'section_form': SectionForm(),
+        'block_form': ContentBlockForm(),
+        'assessment_form': AssessmentForm(),
+    }
+
+    return render(request, 'core/course/teacher/course_edit.html', context)
+
+
+@login_required
+def course_teacher_delete(request, item_type, item_id):
+    if request.user.role != 'teacher':
+        return redirect('core:dashboard_teacher')
+
+    models_map = {
+        'section': Section,
+        'block': ContentBlock,
+        'assessment': Assessment
+    }
+
+    model = models_map.get(item_type)
+
+    if not model:
+        return redirect(request.META.GET('HTTP_REFERER', '/'))
+
+    item = get_object_or_404(model, id=item_id)
+    course_id = None
+
+    if item_type == 'section':
+        course_id = item.course.id
+    else:
+        course_id = item.section.course.id
+
+    if request.method == 'POST':
+        item.delete()
+        messages.success(request, "Elemento eliminado correctamente.")
+        return redirect('core:course_teacher_edit', course_id=course_id)
+
+    return redirect('course_teacher_delete', course_id=course_id)
