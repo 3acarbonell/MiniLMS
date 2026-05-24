@@ -7,7 +7,7 @@ $canvas.addEventListener("mouseup", stopDrawing);
 $canvas.addEventListener("mouseleave", stopDrawing);
 
 
-const ws = new WebSocket('ws://' + window.location.host + '/ws/board/');
+const ws = new WebSocket('wss://' + window.location.host + '/ws/board/');
 
 function sizeOfCanvas() {
     const rect = $canvas.getBoundingClientRect();

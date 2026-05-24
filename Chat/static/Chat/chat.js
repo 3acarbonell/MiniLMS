@@ -1,4 +1,4 @@
-const chatSocket = new WebSocket('ws://' + window.location.host + '/ws/chat/');
+const chatSocket = new WebSocket('wss://' + window.location.host + '/ws/chat/');
 
 const messageInput = document.querySelector('.write_msg');
 const sendButton = document.querySelector('.msg_send_btn');
