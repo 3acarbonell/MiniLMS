@@ -5,7 +5,6 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import CreateView
-from django.db.models import Prefetch
 
 from .models import Course, Section, ContentBlock, Assessment
 from .forms import AssessmentForm, CourseForm, RegisterForm, SectionForm, ContentBlockForm
