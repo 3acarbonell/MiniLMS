@@ -16,7 +16,7 @@ class User(AbstractUser):
 
 class Course(models.Model):
     title = models.CharField(max_length=200)
-    description = models.TextField(max_length=500)
+    description = models.TextField(max_length=300)
     teacher = models.ForeignKey(
         User, models.DO_NOTHING, related_name='course_of_teacher')
     students = models.ManyToManyField(
@@ -35,7 +35,10 @@ class Section(models.Model):
     course = models.ForeignKey(
         Course, on_delete=models.CASCADE, related_name='sections')
     title = models.CharField(max_length=200)
-    order = models.PositiveIntegerField(default=0)
+    order = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return self.title
 
     class Meta:
         ordering = ['order']
