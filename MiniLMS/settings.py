@@ -146,6 +146,8 @@ STATICFILES_DIRS = [
     BASE_DIR / 'LandingPage' / 'static',
     BASE_DIR / 'Board' / 'static',
     BASE_DIR / 'Chat' / 'static',
+    BASE_DIR / 'core' / 'static',
+    BASE_DIR / 'landingpage' / 'static',
 ]
 
 if not DEBUG:
