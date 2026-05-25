@@ -1,4 +1,6 @@
 {% load static %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_utils %}
 <!DOCTYPE html>
 <html lang="es">
 
@@ -8,419 +10,331 @@
     <title>{{ course.title }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <style>
-        .btn-login {
-            --bs-btn-bg: #fff;
-            --bs-btn-color: #1d293d;
-            --bs-btn-border-color: #1d293d;
-            --bs-btn-hover-bg: #fff;
-            --bs-btn-hover-color: #1d293d;
-            --bs-btn-hover-border-color: #1d293d;
-        }
-
-        .btn-sing-up {
-            --bs-btn-bg: #1d293d;
-            --bs-btn-color: #fff;
-            --bs-btn-border-color: #1d293d;
-            --bs-btn-hover-bg: #1d293d;
-            --bs-btn-hover-color: #fff;
-            --bs-btn-hover-border-color: #1d293d;
-        }
-
-        .nav-user-link img {
-            object-fit: cover;
-            display: block;
-        }
-
-        .nav-user-link:hover {
-            background-color: rgba(29, 41, 61, 0.05);
-            color: #1d293d;
-        }
-
-        .btn-section-course:not(.collapsed) {
-            background-color: #1d293d !important;
-            color: #fff !important;
-            border-color: #1d293d !important;
-        }
-
-
-        .btn-section-course:not(.collapsed) span,
-        .btn-section-course:not(.collapsed) {
-            color: #fff !important;
-        }
-
-        .custom-list-item {
-            transition: all 0.2s ease;
-            color: #495057;
-            border-left: 3px solid transparent !important;
-        }
-
-        .custom-list-item:hover {
-            background-color: #f8f9fa;
-            color: #1d293d;
-            border-left: 3px solid #1d293d !important;
-            padding-left: 1.75rem !important;
-        }
-
-        a.list-group-item {
-            text-decoration: none;
-        }
-
-        .btn-login {
-            --bs-btn-bg: #fff;
-            --bs-btn-color: #1d293d;
-            --bs-btn-border-color: #1d293d;
-            --bs-btn-hover-bg: #fff;
-            --bs-btn-hover-color: #1d293d;
-            --bs-btn-hover-border-color: #1d293d;
-        }
-
-        .btn-sing-up {
-            --bs-btn-bg: #1d293d;
-            --bs-btn-color: #fff;
-            --bs-btn-border-color: #1d293d;
-            --bs-btn-hover-bg: #1d293d;
-            --bs-btn-hover-color: #fff;
-            --bs-btn-hover-border-color: #1d293d;
-        }
-
-        .nav-user-link img {
-            object-fit: cover;
-            display: block;
-        }
-
-        .nav-user-link:hover {
-            background-color: rgba(29, 41, 61, 0.05);
-            color: #1d293d;
-        }
-
-        .btn-section-course:not(.collapsed) {
-            background-color: #1d293d !important;
-            color: #fff !important;
-            border-color: #1d293d !important;
-        }
-
-        .btn-section-course:not(.collapsed) span,
-        .btn-section-course:not(.collapsed) {
-            color: #fff !important;
-        }
-
-        .custom-list-item {
-            transition: all 0.2s ease;
-            color: #495057;
-            border-left: 3px solid transparent !important;
-        }
-
-        .custom-list-item:hover {
-            background-color: #f8f9fa;
-            color: #1d293d;
-            border-left: 3px solid #1d293d !important;
-            padding-left: 1.75rem !important;
-        }
-
-        a.list-group-item {
-            text-decoration: none;
-        }
-
-        .incoming_msg_img {
-            display: inline-block;
-            width: 6%;
-        }
-
-        .received_msg {
-            display: inline-block;
-            padding: 0 0 0 10px;
-            vertical-align: top;
-            width: 92%;
-        }
-
-        .received_withd_msg p {
-            background: #ebebeb none repeat scroll 0 0;
-            border-radius: 3px;
-            color: #646464;
-            font-size: 14px;
-            margin: 0;
-            padding: 5px 10px 5px 12px;
-            width: 100%;
-        }
-
-        .time_date {
-            color: #747474;
-            display: block;
-            font-size: 12px;
-            margin: 8px 0 0;
-        }
-
-        .received_withd_msg {
-            width: 57%;
-        }
-
-        .sent_msg p {
-            background: #05728f none repeat scroll 0 0;
-            border-radius: 3px;
-            font-size: 14px;
-            margin: 0;
-            color: #fff;
-            padding: 5px 10px 5px 12px;
-            width: 100%;
-        }
-
-        .sent_msg {
-            float: right;
-            width: 46%;
-        }
-
-        .input_msg_write {
-            position: relative;
-            width: 100%;
-        }
-
-        .input_msg_write input {
-            background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
-            border: solid 1px;
-            color: #4c4c4c;
-            font-size: 15px;
-            min-height: 40px;
-            width: 100%;
-            padding: 0px 45px 0px 10px;
-            border-radius: 20px;
-            outline: none;
-        }
-
-        .type_msg {
-            flex-shrink: 0;
-            border-top: 1px solid #c4c4c4;
-            position: relative;
-            background: #fff;
-            padding: 10px;
-        }
-
-        .msg_send_btn {
-            background: #05728f none repeat scroll 0 0;
-            border: none;
-            border-radius: 50%;
-            color: #fff;
-            cursor: pointer;
-            height: 33px;
-            width: 33px;
-            position: absolute;
-            right: 5px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            transition: background 0.2s;
-        }
-
-        .msg_send_btn:hover {
-            background: #045d75;
-        }
-
-        .messaging {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #c4c4c4;
-            border-radius: 8px;
-        }
-
-        .msg_history {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 15px;
-        }
-
-        .sticky-sidebar {
-            position: sticky;
-            top: 20px;
-            height: fit-content;
-        }
-
-        .chat-column {
-            height: calc(80vh);
-            display: flex;
-            align-items: center;
-            position: sticky;
-            top: 80px;
-        }
-
-        .row.g-0 {
-            transition: all 0.3s ease-in-out;
-        }
-
-        .chat-hidden .col-md-3 {
-            width: 0%;
-            padding: 0 !important;
-            overflow: hidden;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .chat-hidden .col-md-7 {
-            width: 83.333333%;
-        }
-
-        .toggle-chat-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #364b6e;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{% static 'core/css/style.css' %}" crossorigin="anonymous">
 </head>
 
-<body class="d-flex flex-column min-vh-100">
-    {% include 'core/components/navbar.html' %}
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo d-flex align-items-center justify-content-between">
+            <a class="sidebar-logo-text" href="">Mini<span>LMS</span></a>
+            <button class="btn p-0 d-lg-none text-white fs-4" onclick="toggleMobileSidebar()">✕</button>
+        </div>
 
-    <div class="flex-grow-1" id="main-content-layout">
-        <div class="row g-0">
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Principal</div>
+            <a class="sidebar-link">
+                <span class="link-icon">🏠</span> Inicio
+            </a>
+            <a class="sidebar-link">
+                <span class="link-icon">📚</span> Mis Cursos
+            </a>
+            <a class="sidebar-link">
+                <span class="link-icon">👥</span> Estudiantes
+            </a>
+        </div>
 
-            <div class="col-2 border-end d-none d-md-block"></div>
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Herramientas</div>
+            <a class="sidebar-link">
+                <span class="link-icon">✏️</span> Evaluaciones
+            </a>
+            <a class="sidebar-link">
+                <span class="link-icon">📁</span> Contenido
+            </a>
+        </div>
 
-            <div class="col-7 d-flex flex-column border-end" id="col-central">
-                <header>
-                    <div class="container px-4 py-5">
-                        <div class="pb-2 border-bottom">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h2>{{ course.title }}</h2>
-                                <a href="{% url 'core:course_teacher_edit' course.pk %}"
-                                    class="btn btn-outline-dark btn-sm d-flex align-items-center">Editar</a>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h4>{{ course.description }}</h4>
-                                <span
-                                    class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle">
-                                    {{ course.student_count }} Alumnos
-                                </span>
-                            </div>
-                        </div>
+        <div class="sidebar-bottom">
+            <div>
+                <a href="{% url 'core:account' %}" class="d-flex p-2 user">
+                    <div class="d-flex align-items-center gap-2">
+                        <img src="https://ui-avatars.com/api/?name={{ user.first_name }}+{{ user.last_name }}&background=1d293d&color=fff&size=28"
+                            alt="User Avatar" class="teacher-avatar rounded-circle border border-secondary-subtle"
+                            width="28px" height="28px">
                     </div>
-                </header>
-
-                <main class="px-4 py-5">
-                    <div class="container">
-                        {% for section in course.sections.all %}
-                        <div class="mb-2">
-                            <button
-                                class="btn btn-outline-dark btn-section-course no-caret w-100 text-start d-flex justify-content-between align-items-center"
-                                type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ section.id }}">
-                                {{ section.title }}
-                            </button>
-
-                            <div class="collapse shadow-sm" id="collapse-{{ section.id }}">
-                                <ul class="list-group">
-                                    <li class="list-group-item bg-light border-top-0">
-                                        <h6 class="dropdown-header px-0">Contenidos</h6>
-                                    </li>
-
-                                    {% for content in section.contents.all %}
-                                    <a
-                                        class="list-group-item list-group-item-action ps-4 border-start border-end custom-list-item">
-                                        {{ content.title }}</a>
-                                    {% endfor %}
-
-                                    <li class="list-group-item bg-light">
-                                        <h6 class="dropdown-header px-0">Evaluaciones</h6>
-                                    </li>
-
-                                    {% for exam in section.assessments.all %}
-                                    <a
-                                        class="list-group-item list-group-item-action ps-4 border-start border-end custom-list-item">
-                                        <strong>Evaluación: </strong> {{ exam.title }}
-                                    </a>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
-                        {% endfor %}
+                    <div class="px-2">
+                        <div class="teacher-name">{{ user.first_name }} {{ user.last_name }}</div>
+                        <div class="teacher-role">Profesor</div>
                     </div>
-                </main>
+                </a>
+            </div>
+        </div>
+
+    </aside>
+
+    <div class="main-wrapper">
+        <div class="topbar py-3 px-4 d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn p-0 d-lg-none fs-4 border-0" onclick="toggleMobileSidebar()">☰</button>
+                <div class="topbar-breadcrumb d-flex align-items-center gap-2 mb-0">
+                    <a href="">Mis Cursos</a>
+                    <span class="opacity-50">›</span>
+                    <span class="current">{{ course.title }}</span>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-custom btn-custom-primary btn-sm px-3 py-2" data-bs-toggle="modal"
+                    data-bs-target="#modalSection">
+                    + Nueva sección
+                </button>
+            </div>
+        </div>
+
+        <div class="container-fluid p-4 flex-grow-1">
+
+            <div class="course-header p-4 p-md-5 mb-4 text-white">
+                <div class="row align-items-start justify-content-between gy-4 position-relative z-1">
+                    <div class="col-12 col-md-8">
+                        <h1 class="mb-2">{{ course.title }}</h1>
+                        <p class="course-desc mb-0">{{ course.description }}</p>
+                    </div>
+                </div>
             </div>
 
-            <div class="col-md-3 px-3" id="col-chat">
-                <div class="chat-column">
+            <ul class="nav nav-tabs nav-tabs-custom mb-4" id="courseTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="contenido-tab" data-bs-toggle="tab"
+                        data-bs-target="#panel-contenido" type="button" role="tab" aria-controls="panel-contenido"
+                        aria-selected="true">Contenido</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="estudiantes-tab" data-bs-toggle="tab"
+                        data-bs-target="#panel-estudiantes" type="button" role="tab" aria-controls="panel-estudiantes"
+                        aria-selected="false">Estudiantes</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="evaluaciones-tab" data-bs-toggle="tab"
+                        data-bs-target="#panel-evaluaciones" type="button" role="tab" aria-controls="panel-evaluaciones"
+                        aria-selected="false">Evaluaciones</button>
+                </li>
+            </ul>
 
-                    <div class="messaging shadow-lg">
-                        <div class="p-3 border-bottom">
-                            <h4 class="mb-0">Chat</h4>
-                        </div>
+            <div class="tab-content" id="courseTabsContent">
 
-                        <div class="msg_history"></div>
+                <div class="tab-pane fade show active" id="panel-contenido" role="tabpanel"
+                    aria-labelledby="contenido-tab">
+                    <div class="d-flex flex-column gap-3">
 
-                        <div class="type_msg">
-                            <div class="input_msg_write">
-                                <input type="text" class="write_msg" placeholder="Type a message" maxlength="60" />
-                                <button class="msg_send_btn" type="button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                        class="bi bi-send" viewBox="0 0 16 16">
-                                        <path
-                                            d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
-                                    </svg>
-                                </button>
+                        {% for section in course.sections.all %}
+                        <div class="content-section">
+                            <div class="section-head d-flex align-items-center gap-3" data-bs-toggle="collapse"
+                                data-bs-target="#collapse-sec-{{ section.id }}"
+                                aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}">
+                                <div class="section-num">{{ section.order }}</div>
+                                <div class="section-name flex-grow-1 mb-0">{{ section.title }}</div>
+                                <div class="section-count d-none d-sm-block text-muted">{{ section.contents.count }}
+                                    elemento(s)</div>
+                                <div class="d-flex gap-1" onclick="event.stopPropagation()">
+                                    <button class="icon-btn edit-btn" title="Editar Sección" data-bs-toggle="modal"
+                                        data-bs-target="#modalSection" data-id="{{ section.id }}"
+                                        data-title="{{ section.title }}" data-order="{{ section.order }}">✏️</button>
+
+                                    <form action="{% url 'core:course_teacher_delete' 'section' section.id %}"
+                                        method="POST"
+                                        onsubmit="return confirm('¿Eliminar esta sección y todo su contenido?');"
+                                        class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="icon-btn delete"
+                                            title="Eliminar Sección">🗑</button>
+                                    </form>
+                                </div>
+                                <span class="fs-6 text-muted">▼</span>
+                            </div>
+
+                            <div class="collapse {% if forloop.first %}show{% endif %}"
+                                id="collapse-sec-{{ section.id }}">
+                                <div class="p-3 bg-white border-top">
+                                    <div class="d-flex flex-column gap-2">
+
+                                        {% for block in section.contents.all %}
+                                        <div class="item-row d-flex align-items-center gap-3">
+                                            <div class="flex-grow-1 text-truncate">
+                                                <div class="item-name text-truncate">{{ block.title }}</div>
+                                            </div>
+                                            <div class="item-actions d-flex gap-1">
+                                                <button class="icon-btn edit-btn" data-bs-toggle="modal"
+                                                    data-bs-target="#modalBlock" data-id="{{ block.id }}"
+                                                    data-section="{{ section.id }}" data-title="{{ block.title }}"
+                                                    data-content="{{ block.content }}">✏️</button>
+
+                                                <form action="{% url 'core:course_teacher_delete' 'block' block.id %}"
+                                                    method="POST" onsubmit="return confirm('¿Eliminar este material?');"
+                                                    class="d-inline">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="icon-btn delete">🗑</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        {% empty %}
+                                        <p class="text-muted small ps-2 my-2">Sin material de lectura asignado.</p>
+                                        {% endfor %}
+
+                                        <button class="add-item-btn mt-2" data-section-id="{{ section.id }}"
+                                            data-bs-toggle="modal" data-bs-target="#modalBlock">+ Agregar contenido
+                                            de lectura</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        {% empty %}
+                        <div class="text-center py-5 bg-white border rounded-3">
+                            <p class="text-muted mb-0">Este curso aún no tiene secciones de aprendizaje.</p>
+                        </div>
+                        {% endfor %}
 
+                        <button class="add-section-btn mt-2" data-bs-toggle="modal" data-bs-target="#modalSection">
+                            + Insertar nueva sección de aprendizaje
+                        </button>
                     </div>
-
                 </div>
+
+                <div class="tab-pane fade" id="panel-estudiantes" role="tabpanel" aria-labelledby="estudiantes-tab">
+                    <div class="d-flex flex-column gap-3">
+                        <div class="table-custom table-responsive shadow-sm">
+                            <table class="table table-hover mb-0 align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Estudiante</th>
+                                        <th>Progreso</th>
+                                        <th class="text-end">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="text-muted small">Módulo de visualización inactivo en
+                                                edición</span></td>
+                                        <td>-</td>
+                                        <td class="text-end">-</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="panel-evaluaciones" role="tabpanel" aria-labelledby="evaluaciones-tab">
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
+                        <div class="col">
+                            <div class="eval-card type-mc">
+                                <span class="eval-type-tag tag-mc">Inactivo</span>
+                                <h3 class="eval-title mt-2">Pestaña reservada</h3>
+                                <p class="eval-meta text-muted mb-0">Implementación en fases posteriores.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
 
         </div>
     </div>
 
-    <button class="toggle-chat-btn" id="toggle-chat">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-right-text"
-            viewBox="0 0 16 16">
-            <path
-                d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a2 2 0 0 1 1.414.586l2 2V2a1 1 0 0 0-1-1zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z" />
-            <path
-                d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6m0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5" />
-        </svg>
-    </button>
+    <div class="modal fade" id="modalSection" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-2" style="border-radius: 18px;">
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="section_id" id="edit_section_id">
+                    <div class="modal-header border-bottom-0 pb-0">
+                        <h5 class="modal-title fs-5" id="sectionModalTitle">Nueva Sección</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        {% crispy section_form %}
+                    </div>
+                    <div class="modal-footer border-top-0 pt-0">
+                        <button type="button" class="btn btn-sm btn-light px-3"
+                            data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" name="save_section"
+                            class="btn btn-sm btn-custom-primary px-3">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-    {% include 'core/components/footer.html' %}
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const btnToggle = document.getElementById('toggle-chat');
-            const colCentral = document.getElementById('col-central');
-            const colChat = document.getElementById('col-chat');
-
-            if (btnToggle) {
-                btnToggle.addEventListener('click', () => {
-                    if (colChat.classList.contains('d-none')) {
-                        colChat.classList.remove('d-none');
-                        colCentral.className = "col-7 d-flex flex-column border-end";
-                    } else {
-                        colChat.classList.add('d-none');
-                        colCentral.className = "col-10 d-flex flex-column border-end";
-                    }
-                });
-            }
-        });
-
-        const currentUser = "{{ user.first_name }} {{ user.last_name }}";
-    </script>
+    <div class="modal fade" id="modalBlock" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-2" style="border-radius: 18px;">
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="block_id" id="edit_block_id">
+                    <input type="hidden" name="section_id" id="hidden_section_id_block">
+                    <div class="modal-header border-bottom-0 pb-0">
+                        <h5 class="modal-title fs-5" id="blockModalTitle">Material de Estudio</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        {% crispy block_form %}
+                    </div>
+                    <div class="modal-footer border-top-0 pt-0">
+                        <button type="button" class="btn btn-sm btn-light px-3"
+                            data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" name="save_block" class="btn btn-sm btn-custom-teal px-3">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
 
-    <script src="{% static 'Chat/chat.js' %}"></script>
+    <script>
+        function toggleMobileSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function () {
+                    sidebarLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            const modalSection = document.getElementById('modalSection');
+            modalSection.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const idInput = document.getElementById('edit_section_id');
+
+                if (button && button.hasAttribute('data-id')) {
+                    document.getElementById('sectionModalTitle').innerText = "Editar Sección";
+                    idInput.value = button.getAttribute('data-id');
+                    modalSection.querySelector('input[name="title"]').value = button.getAttribute('data-title');
+                    modalSection.querySelector('input[name="order"]').value = button.getAttribute('data-order');
+                } else {
+                    idInput.value = "";
+                    modalSection.querySelector('form').reset();
+                    document.getElementById('sectionModalTitle').innerText = "Nueva Sección";
+                }
+            });
+
+            const modalBlock = document.getElementById('modalBlock');
+            modalBlock.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const idInput = document.getElementById('edit_block_id');
+
+                const sectionId = button.getAttribute('data-section-id') || button.getAttribute('data-section');
+                document.getElementById('hidden_section_id_block').value = sectionId;
+
+                if (button && button.hasAttribute('data-id')) {
+                    document.getElementById('blockModalTitle').innerText = "Editar Bloque de Texto";
+                    idInput.value = button.getAttribute('data-id');
+                    modalBlock.querySelector('input[name="title"]').value = button.getAttribute('data-title');
+                    modalBlock.querySelector('textarea[name="content"]').value = button.getAttribute('data-content');
+                } else {
+                    idInput.value = "";
+                    modalBlock.querySelector('form').reset();
+                    document.getElementById('hidden_section_id_block').value = sectionId;
+                    document.getElementById('blockModalTitle').innerText = "Material de Estudio";
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
