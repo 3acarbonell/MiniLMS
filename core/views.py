@@ -94,18 +94,6 @@ def account(request):
 
 
 @login_required
-def course_teacher(request, pk):
-    if request.user.role != 'teacher':
-        return redirect('core:dashboard_teacher')
-
-    course = get_object_or_404(Course, pk=pk)
-
-    return render(request, "core/course/teacher/course.html", {
-        'course': course
-    })
-
-
-@login_required
 def course_student(request, pk):
     if request.user.role != 'student':
         return redirect('core:dashboard_student')
@@ -118,7 +106,7 @@ def course_student(request, pk):
 
 
 @login_required
-def course_teacher_edit(request, course_id):
+def course_teacher(request, course_id):
     if request.user.role != 'teacher':
         return redirect('core:dashboard_teacher')
 
@@ -137,7 +125,7 @@ def course_teacher_edit(request, course_id):
                 section = form.save(commit=False)
                 section.course = course
                 section.save()
-                return redirect('core:course_teacher_edit', course_id=course.id)
+                return redirect('core:course_teacher', course_id=course.id)
 
         elif 'save_block' in request.POST:
             block_id = request.POST.get('block_id')
@@ -152,7 +140,7 @@ def course_teacher_edit(request, course_id):
                 block = form.save(commit=False)
                 block.section = get_object_or_404(Section, id=section_id)
                 block.save()
-                return redirect('core:course_teacher_edit', course_id=course.id)
+                return redirect('core:course_teacher', course_id=course.id)
 
         elif 'save_asmt' in request.POST:
             asmt_id = request.POST.get('asmt_id')
@@ -167,7 +155,7 @@ def course_teacher_edit(request, course_id):
                 asmt = form.save(commit=False)
                 asmt.section = get_object_or_404(Section, id=section_id)
                 asmt.save()
-                return redirect('core:course_teacher_edit', course_id=course.id)
+                return redirect('core:course_teacher', course_id=course.id)
 
     context = {
         'course': course,
@@ -176,7 +164,7 @@ def course_teacher_edit(request, course_id):
         'assessment_form': AssessmentForm(),
     }
 
-    return render(request, 'core/course/teacher/course_edit.html', context)
+    return render(request, 'core/course/teacher/course.html', context)
 
 
 @login_required
@@ -206,6 +194,6 @@ def course_teacher_delete(request, item_type, item_id):
     if request.method == 'POST':
         item.delete()
         messages.success(request, "Elemento eliminado correctamente.")
-        return redirect('core:course_teacher_edit', course_id=course_id)
+        return redirect('core:course_teacher', course_id=course_id)
 
     return redirect('course_teacher_delete', course_id=course_id)

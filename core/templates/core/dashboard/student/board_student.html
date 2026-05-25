@@ -9,110 +9,374 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <style>
-        .btn-login {
-            --bs-btn-bg: #fff;
-            --bs-btn-color: #1d293d;
-            --bs-btn-border-color: #1d293d;
-            --bs-btn-hover-bg: #fff;
-            --bs-btn-hover-color: #1d293d;
-            --bs-btn-hover-border-color: #1d293d;
+        :root {
+            --ink: #1a1a2e;
+            --ink-light: #2d2d4a;
+            --slate: #3d3d5c;
+            --mist: #6b6b8a;
+            --fog: #a8a8c0;
+            --paper: #f4f2ee;
+            --cream: #faf8f4;
+            --accent: #c4843a;
+            --accent-light: #d9a563;
+            --accent-pale: #f5e8d6;
+            --teal: #2e6e72;
+            --teal-light: #3d8f94;
+            --teal-pale: #e0f0f1;
+            --white: #ffffff;
+            --border: rgba(26, 26, 46, 0.08);
+            --border-med: rgba(26, 26, 46, 0.15);
+            --shadow-sm: 0 2px 10px rgba(26, 26, 46, 0.05);
+            --shadow-md: 0 8px 28px rgba(26, 26, 46, 0.08);
+            --shadow-lg: 0 20px 56px rgba(26, 26, 46, 0.12);
+            --sidebar-w: 260px;
         }
 
-        .btn-sing-up {
-            --bs-btn-bg: #1d293d;
-            --bs-btn-color: #fff;
-            --bs-btn-border-color: #1d293d;
-            --bs-btn-hover-bg: #1d293d;
-            --bs-btn-hover-color: #fff;
-            --bs-btn-hover-border-color: #1d293d;
+        body {
+            font-family: sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        .card-hover-shadow {
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--ink);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 200;
+            transition: transform 0.3s;
+        }
+
+        .sidebar-logo {
+            padding: 1.6rem 1.5rem 1.3rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-logo-text {
+            font-family: serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .sidebar-logo-text span {
+            color: var(--accent);
+        }
+
+        .sidebar-section-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.28);
+            padding: 0 0.75rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 0.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 0.855rem;
+            transition: background 0.18s, color 0.18s;
+            margin-bottom: 0.15rem;
+            cursor: pointer;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: rgba(255, 255, 255, 0.07);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .sidebar-link.active {
+            background: rgba(196, 132, 58, 0.18);
+            color: var(--accent-light);
+        }
+
+        .main-layout-wrapper {
+            margin-left: var(--sidebar-w);
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            transition: margin 0.3s;
+        }
+
+        .custom-navbar {
+            background: rgba(250, 248, 244, 0.95);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border);
+            padding: 0.85rem 1.5rem;
+        }
+
+        .nav-user-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            color: var(--slate);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .welcome-header-banner {
+            background: var(--ink);
+            border-radius: 18px;
             position: relative;
-            transition: transform 0.2s, box-shadow 0.2s;
+            overflow: hidden;
         }
 
-        .card-hover-shadow:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important;
-            z-index: 10;
+        .welcome-header-banner::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(196, 132, 58, 0.12) 0%, transparent 70%);
         }
 
-        .nav-user-link img {
-            object-fit: cover;
-            display: block;
+        .welcome-title-text {
+            font-family: serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
         }
 
-        .nav-user-link:hover {
-            background-color: rgba(29, 41, 61, 0.05);
-            color: #1d293d;
+        .welcome-desc-text {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.95rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+        }
+
+        .section-title {
+            font-family: serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .course-premium-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .course-premium-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--border-med);
+        }
+
+        .course-card-header {
+            padding: 1.2rem 1.25rem 0.8rem;
+            background: transparent;
+            border-bottom: none;
+        }
+
+        .teacher-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--mist);
+        }
+
+        .students-badge {
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.35rem 0.7rem;
+            border-radius: 12px;
+            background-color: var(--teal-pale);
+            color: var(--teal);
+            border: none;
+        }
+
+        .course-card-body {
+            padding: 0.2rem 1.25rem 1.4rem;
+        }
+
+        .course-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--ink);
+            line-height: 1.4;
+        }
+
+        .course-description {
+            font-size: 0.88rem;
+            color: var(--slate);
+            font-weight: 400;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .custom-footer {
+            background: var(--white);
+            border-top: 1px solid var(--border);
+            color: var(--mist);
+            font-size: 0.82rem;
+            padding: 1.5rem;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        @media (max-width: 991.98px) {
+            .main-layout-wrapper {
+                margin-left: 0;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding: 1rem 1.5rem 1.4rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .user {
+            text-decoration: none;
+            background-color: #353561;
+            border-radius: 4px;
+            color: #fff;
+        }
+
+        .student-name {
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .student-role {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.35);
         }
     </style>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-    {% include 'core/components/navbar.html' %}
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo d-flex align-items-center justify-content-between">
+            <a class="sidebar-logo-text" href="">Mini<span>LMS</span></a>
+            <button class="btn p-0 d-lg-none text-white fs-4" onclick="toggleMobileSidebar()">✕</button>
+        </div>
+        <div class="p-3">
+            <div class="sidebar-section-label">Navegación</div>
+            <a href="" class="sidebar-link active"><span class="link-icon">🏠</span> Panel General</a>
+        </div>
 
-    <div class="container-fluid flex-grow-1">
-        <div class="row g-0 h-100">
-
-            <div class="col-2 border-end col-left-spacer d-none d-md-block">
+        <div class="sidebar-bottom">
+            <div>
+                <a href="{% url 'core:account' %}" class="d-flex p-2 user">
+                    <div class="d-flex align-items-center gap-2">
+                        <img src="https://ui-avatars.com/api/?name={{ user.first_name }}+{{ user.last_name }}&background=1d293d&color=fff&size=28"
+                            alt="User Avatar" class="student-avatar rounded-circle border border-secondary-subtle"
+                            width="28px" height="28px">
+                    </div>
+                    <div class="px-2">
+                        <div class="student-name">{{ user.first_name }} {{ user.last_name }}</div>
+                        <div class="student-role">Profesor</div>
+                    </div>
+                </a>
             </div>
+        </div>
+    </aside>
 
-            <div class="col-6 d-flex flex-column border-end">
-                <header>
-                    <div class="container px-4 py-5">
-                        <div class="pb-2 border-bottom">
-                            <h2>{{ user.first_name }} {{ user.last_name }}</h2>
-                            <span>Panel del {{ user.get_role_display }}</span>
-                        </div>
-                    </div>
-                </header>
+    <div class="main-layout-wrapper">
 
-                <main class="px-4 py-5">
+        <nav class="navbar custom-navbar d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn p-0 d-lg-none fs-4 border-0" onclick="toggleMobileSidebar()">☰</button>
+                <span class="fw-semibold text-dark d-none d-sm-inline">Plataforma de Aprendizaje</span>
+            </div>
+        </nav>
 
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2>Mis Cursos</h2>
-                    </div>
+        <div class="flex-grow-1 container-fluid px-md-4 py-4">
 
-                    <div class="row row-cols-1 row-cols-md-3 g-4">
-                        {% for course in courses %}
-                        <div class="col">
-                            <div class="card border-dark h-100 card-hover-shadow">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <span class="fw-bold">{{ course.teacher }}</span>
-                                    <span
-                                        class="badge rounded-pill bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle">
-                                        {{ course.student_count }} Alumnos
-                                    </span>
-                                </div>
-                                <div class="card-body">
-                                    <span class="fw-bold">{{ course.title }}</span>
-                                    <p class="card-text">{{ course.description}}</p>
+            <header class="welcome-header-banner p-4 p-md-5 mb-5 text-white">
+                <div class="position-relative z-1">
+                    <h1 class="welcome-title-text mb-1">{{ user.first_name }} {{ user.last_name }}</h1>
+                    <span class="welcome-desc-text text-uppercase">{{ user.get_role_display }}</span>
+                </div>
+            </header>
 
-                                    <a class="course-card stretched-link"
-                                        href="{% url 'core:course_student' course.pk %}"></a>
-                                </div>
+            <main class="px-2">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="section-title mb-0">Mis Cursos Inscritos</h2>
+                </div>
+
+                <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+                    {% for course in courses %}
+                    <div class="col">
+                        <div class="card h-100 course-premium-card">
+
+                            <div
+                                class="card-header course-card-header d-flex justify-content-between align-items-center">
+                                <span class="teacher-label"><i class="bi bi-person me-1"></i>{{ course.teacher }}</span>
+                                <span class="badge students-badge">
+                                    {{ course.student_count }} Alumnos
+                                </span>
                             </div>
-                        </div>
-                        {% empty %}
-                        <div class="col-12">
-                            <p class="text-center">Aún no perteneces a ningún curso</p>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </main>
-            </div>
 
+                            <div class="card-body course-card-body d-flex flex-column">
+                                <h3 class="course-title mb-2">{{ course.title }}</h3>
+                                <p class="course-description mb-4">{{ course.description }}</p>
+
+                                <a class="stretched-link" href="{% url 'core:course_student' course.pk %}"></a>
+                            </div>
+
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 w-100">
+                        <div class="text-center py-5 bg-white border border-dashed rounded-3 p-4 shadow-sm">
+                            <i class="bi bi-journal-x fs-1 text-muted d-block mb-2"></i>
+                            <p class="text-muted mb-0">Aún no perteneces a ningún curso activo.</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </main>
 
         </div>
     </div>
 
-    {% include 'core/components/footer.html' %}
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
+
+    <script>
+        function toggleMobileSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+    </script>
 </body>
 
 </html>
