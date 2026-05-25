@@ -1,0 +1,10 @@
+{
+    "$schema": "https://railway.app/railway.schema.json",
+    "build": {
+        "builder": "NIXPACKS",
+        "buildCommand": "pip install -r requirements.txt && python manage.py collectstatic --no-input && python manage.py migrate --noinput && python manage.py populate_users && python manage.py populate_courses"
+    },
+    "deploy": {
+        "startCommand": "gunicorn MiniLMS.wsgi:application"
+    }
+}

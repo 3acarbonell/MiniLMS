@@ -1,0 +1,1 @@
+web: gunicorn MiniLMS.wsgi:application
