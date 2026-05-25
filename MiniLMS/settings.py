@@ -133,9 +133,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = '/static/'
-
 STATICFILES_DIRS = [
     BASE_DIR / 'LandingPage' / 'static',
+    BASE_DIR / 'Board' / 'static',
+    BASE_DIR / 'Chat' / 'static',
 ]
 
 if not DEBUG:
