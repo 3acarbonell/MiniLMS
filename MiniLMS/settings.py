@@ -18,7 +18,6 @@ import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
@@ -26,17 +25,28 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get(
     'SECRET_KEY', default='django-insecure-88q8iwx0app%9ib^7mm6an4$144e=(p5f&u+wqy)#zf%*azmt4')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'RENDER' not in os.environ
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'minilms-hz2z.onrender.com']
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    'minilms-production-c055.up.railway.app',
+    '.railway.app'
+]
 
-RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+RAILWAY_PUBLIC_DOMAIN = os.environ.get('RAILWAY_PUBLIC_DOMAIN')
+if RAILWAY_PUBLIC_DOMAIN:
+    ALLOWED_HOSTS.append(RAILWAY_PUBLIC_DOMAIN)
+
+if not DEBUG:
+    CSRF_TRUSTED_ORIGINS = [
+        'https://minilms-production-c055.up.railway.app',
+        'https://*.railway.app'
+    ]
+
 
 # Application definition
-
 INSTALLED_APPS = [
     'daphne',
     'channels',
@@ -83,12 +93,10 @@ TEMPLATES = [
 ]
 
 ASGI_APPLICATION = 'MiniLMS.asgi.application'
-
+WSGI_APPLICATION = 'MiniLMS.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 DATABASES = {
     'default': dj_database_url.config(
@@ -96,6 +104,11 @@ DATABASES = {
     )
 }
 
+if DATABASES['default'] and 'ENGINE' in DATABASES['default']:
+    db_url = os.environ.get('DATABASE_URL')
+    if db_url and db_url.startswith('postgresql://'):
+        DATABASES['default'] = dj_database_url.parse(
+            db_url.replace('postgresql://', 'postgres://', 1))
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -120,11 +133,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
 LANGUAGE_CODE = 'es'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 
@@ -132,21 +142,19 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = '/static/'
-
 STATICFILES_DIRS = [
     BASE_DIR / 'LandingPage' / 'static',
+    BASE_DIR / 'Board' / 'static',
+    BASE_DIR / 'Chat' / 'static',
 ]
 
 if not DEBUG:
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
     STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
 
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
 
