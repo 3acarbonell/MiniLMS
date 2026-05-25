@@ -26,13 +26,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get(
     'SECRET_KEY', default='django-insecure-88q8iwx0app%9ib^7mm6an4$144e=(p5f&u+wqy)#zf%*azmt4')
 
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost',
+                 'minilms-production-c055.up.railway.app']
+
+
 RAILWAY_PUBLIC_DOMAIN = os.environ.get('RAILWAY_PUBLIC_DOMAIN')
 if RAILWAY_PUBLIC_DOMAIN:
     ALLOWED_HOSTS.append(RAILWAY_PUBLIC_DOMAIN)
-
-
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost',
-                 'minilms-production-c055.up.railway.app']
 
 
 # Application definition
