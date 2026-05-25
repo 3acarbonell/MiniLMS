@@ -83,7 +83,7 @@ TEMPLATES = [
 ]
 
 ASGI_APPLICATION = 'MiniLMS.asgi.application'
-
+WSGI_APPLICATION = 'MiniLMS.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
