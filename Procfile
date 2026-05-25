@@ -1,1 +1,1 @@
-web: gunicorn MiniLMS.wsgi:application
+web: uvicorn MiniLMS.asgi:application --host 0.0.0.0 --port $PORT
