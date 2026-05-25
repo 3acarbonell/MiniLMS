@@ -27,13 +27,9 @@ SECRET_KEY = os.environ.get(
     'SECRET_KEY', default='django-insecure-88q8iwx0app%9ib^7mm6an4$144e=(p5f&u+wqy)#zf%*azmt4')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'RENDER' not in os.environ
+DEBUG = 'RAILWAY_ENVIRONMENT_NAME' not in os.environ
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'minilms-hz2z.onrender.com']
-
-RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'railway.app']
 
 # Application definition
 
