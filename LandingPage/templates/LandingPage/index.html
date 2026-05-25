@@ -327,7 +327,7 @@
                 <div class="navbar-nav ms-auto align-items-md-center gap-md-4 pt-3 pt-md-0">
                     <a class="nav-link px-0" href="#features">Características</a>
                     <a class="nav-link px-0" href="#steps">Cómo funciona</a>
-                    <a class="btn-nav mt-2 mt-md-0" href="">Comenzar</a>
+                    <a class="btn-nav mt-2 mt-md-0" href="{% url 'core:login' %}">Comenzar</a>
                 </div>
             </div>
         </div>
@@ -346,10 +346,10 @@
                     <p class="hero-desc">La plataforma que conecta profesores y estudiantes. Gestiona cursos, comparte
                         contenido y evalúa el progreso de manera eficiente.</p>
                     <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
-                        <a class="btn-custom-primary" href="">Comenzar ahora
+                        <a class="btn-custom-primary" href="{% url 'core:login' %}">Comenzar ahora
                             <!-- SVG -->
                         </a>
-                        <a class="btn-custom-secondary" href="">Ver características
+                        <a class="btn-custom-secondary" href="#features">Ver características
                             <!-- SVG -->
                         </a>
                     </div>
