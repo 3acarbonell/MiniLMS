@@ -30,13 +30,10 @@ RAILWAY_PUBLIC_DOMAIN = os.environ.get('RAILWAY_PUBLIC_DOMAIN')
 if RAILWAY_PUBLIC_DOMAIN:
     ALLOWED_HOSTS.append(RAILWAY_PUBLIC_DOMAIN)
 
-if DEBUG:
-    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-else:
-    ALLOWED_HOSTS = [
-        'minilms-production-c055.up.railway.app',
-        '.railway.app',
-    ]
+
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost',
+                 'minilms-production-c055.up.railway.app']
+
 
 # Application definition
 
