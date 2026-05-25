@@ -267,6 +267,17 @@
             border-radius: 4px;
             color: #fff;
         }
+
+        .student-name {
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .student-role {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.35);
+        }
     </style>
 </head>
 
@@ -286,12 +297,12 @@
                 <a href="{% url 'core:account' %}" class="d-flex p-2 user">
                     <div class="d-flex align-items-center gap-2">
                         <img src="https://ui-avatars.com/api/?name={{ user.first_name }}+{{ user.last_name }}&background=1d293d&color=fff&size=28"
-                            alt="User Avatar" class="teacher-avatar rounded-circle border border-secondary-subtle"
+                            alt="User Avatar" class="student-avatar rounded-circle border border-secondary-subtle"
                             width="28px" height="28px">
                     </div>
                     <div class="px-2">
-                        <div class="teacher-name">{{ user.first_name }} {{ user.last_name }}</div>
-                        <div class="teacher-role">Profesor</div>
+                        <div class="student-name">{{ user.first_name }} {{ user.last_name }}</div>
+                        <div class="student-role">Profesor</div>
                     </div>
                 </a>
             </div>
