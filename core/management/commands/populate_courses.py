@@ -1,3 +1,5 @@
+from datetime import date, time, timedelta
+
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 
@@ -51,7 +53,9 @@ class Command(BaseCommand):
                     f'Curso: "{title}", Error'))
 
     def create_course_structure(self, course):
+
         for i in range(1, 7):
+
             section = Section.objects.create(
                 course=course,
                 title=f'Unidad {i}: Introducción y Fundamentos',
@@ -68,12 +72,30 @@ class Command(BaseCommand):
                 )
             )
 
-            Assessment.objects.create(
+            assessment = Assessment.objects.create(
                 section=section,
+
                 title=f'Test de Conocimientos - Unidad {i}',
-                description=f'Evaluación sumativa correspondiente a la {section.title}.',
-                max_score=7.0
+
+                description=(
+                    f'Evaluación sumativa correspondiente '
+                    f'a la {section.title}.'
+                ),
+
+                max_score=7.0,
+
+                start_date=date.today() + timedelta(days=i),
+
+                start_time=time(18, 0),
+
+                duration=60
+            )
+
+            assessment.students.set(
+                course.students.all()
             )
 
         self.stdout.write(self.style.SUCCESS(
-            f'\t-> Estructura (Secciones/Textos/Tests) generada para {course.title}'))
+            f'\t-> Estructura (Secciones/Textos/Tests) '
+            f'generada para {course.title}'
+        ))

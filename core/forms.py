@@ -103,18 +103,21 @@ class ContentBlockForm(forms.ModelForm):
 class AssessmentForm(forms.ModelForm):
     class Meta:
         model = Assessment
-        fields = ['title', 'description', 'max_score']
+        fields = ['title', 'description', 'start_date',
+                  'start_time', 'duration', 'students']
+        widgets = {
+            'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'start_time': forms.TimeInput(attrs={'type': 'time'}),
+            'students': forms.CheckboxSelectMultiple
+        }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, course=None, **kwargs):
         super().__init__(*args, **kwargs)
+
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.layout = Layout(
-            Div(
-                HTML('<h5 class="mb-3">Configurar Evaluación</h5>'),
-                Field('title', css_class='mb-3'),
-                Field('description', css_class='mb-3', rows='2'),
-                Field('max_score', css_class='mb-3'),
-                css_class="border p-3 mb-4 bg-white rounded"
-            )
-        )
+
+        self.fields['students'].queryset = User.objects.none()
+
+        if course:
+            self.fields['students'].queryset = (course.students.all())

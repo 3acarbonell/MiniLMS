@@ -1,3 +1,5 @@
+from datetime import date, time
+
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
@@ -40,6 +42,10 @@ class Section(models.Model):
     def __str__(self):
         return self.title
 
+    @property
+    def total_items(self):
+        return (self.contents.count() + self.assessments.count())
+
     class Meta:
         ordering = ['order']
 
@@ -58,6 +64,11 @@ class Assessment(models.Model):
     description = models.TextField()
     max_score = models.DecimalField(
         max_digits=5, decimal_places=2, default=7.0)
+    start_date = models.DateField(default=date(2026, 1, 1))
+    start_time = models.TimeField(default=time(12, 0))
+    duration = models.IntegerField(null=False, default=5)
+    students = models.ManyToManyField(
+        User, related_name='assigned_exam', blank=True)
 
 
 class Grade(models.Model):
@@ -70,3 +81,28 @@ class Grade(models.Model):
 
     class Meta:
         unique_together = ('assessment', 'student')
+
+
+"""
+class QuestionCreation(models.Model):
+    types = (('vf', 'Verdadero o Falso'), ('mc', 'Selección Múltiple'))
+    exam = models.ForeignKey(
+        ExamCreation, related_name='questions', on_delete=models.CASCADE)
+    question_type = models.CharField(max_length=2, choices=types)
+    text = models.TextField()
+    vf_answer = models.BooleanField()
+
+    def __str__(self):
+        return f"{self.get_type_display()}: {self.text}"
+
+
+class ChoiceCreation(models.Model):
+    question = models.ForeignKey(
+        QuestionCreation, on_delete=models.CASCADE)
+    text = models.CharField(max_length=255)
+    is_correct = models.BooleanField()
+    letter = models.CharField(max_length=1)
+
+    def __str__(self):
+        return f"{self.letter}) {self.text}"
+"""
