@@ -59,7 +59,7 @@ body {
 }
 
 .sidebar-logo-text {
-    font-family: 'Playfair Display', serif;
+    font-family: serif;
     font-size: 1.3rem;
     font-weight: 700;
     color: var(--white);
@@ -261,7 +261,7 @@ body {
 }
 
 .course-title-wrap h1 {
-    font-family: 'Playfair Display', serif;
+    font-family: serif;
     font-size: 1.9rem;
     font-weight: 700;
     color: var(--white);
@@ -503,7 +503,7 @@ body {
     border: 1.5px dashed var(--border-med);
     border-radius: 8px;
     color: var(--mist);
-    font-family: 'DM Sans', sans-serif;
+    font-family: sans-serif;
     font-size: 0.8rem;
     font-weight: 500;
     transition: border-color 0.18s, color 0.18s, background 0.18s;
