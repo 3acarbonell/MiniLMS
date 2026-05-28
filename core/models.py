@@ -13,7 +13,7 @@ class User(AbstractUser):
     role = models.CharField(max_length=10, choices=ROLE_CHOISES)
 
     def __str__(self):
-        return f"{self.get_role_display()}: {self.first_name} {self.last_name}"
+        return f"{self.first_name} {self.last_name}"
 
 
 class Course(models.Model):
@@ -83,26 +83,24 @@ class Grade(models.Model):
         unique_together = ('assessment', 'student')
 
 
-"""
-class QuestionCreation(models.Model):
+class Question(models.Model):
     types = (('vf', 'Verdadero o Falso'), ('mc', 'Selección Múltiple'))
-    exam = models.ForeignKey(
-        ExamCreation, related_name='questions', on_delete=models.CASCADE)
+    assessment = models.ForeignKey(
+        Assessment, related_name='questions', on_delete=models.CASCADE)
     question_type = models.CharField(max_length=2, choices=types)
     text = models.TextField()
-    vf_answer = models.BooleanField()
+    vf_answer = models.BooleanField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.get_type_display()}: {self.text}"
+        return f"{self.get_question_type_display()}: {self.text}"
 
 
-class ChoiceCreation(models.Model):
+class Choice(models.Model):
     question = models.ForeignKey(
-        QuestionCreation, on_delete=models.CASCADE)
+        Question, related_name='choices', on_delete=models.CASCADE)
     text = models.CharField(max_length=255)
     is_correct = models.BooleanField()
     letter = models.CharField(max_length=1)
 
     def __str__(self):
         return f"{self.letter}) {self.text}"
-"""

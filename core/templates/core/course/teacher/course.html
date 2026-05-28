@@ -10,7 +10,987 @@
     <title>{{ course.title }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static 'core/css/style.css' %}" crossorigin="anonymous">
+    <style>
+        :root {
+            --ink: #1a1a2e;
+            --ink-light: #2d2d4a;
+            --slate: #3d3d5c;
+            --mist: #6b6b8a;
+            --fog: #a8a8c0;
+            --paper: #f4f2ee;
+            --cream: #faf8f4;
+            --accent: #c4843a;
+            --accent-light: #d9a563;
+            --accent-pale: #f5e8d6;
+            --teal: #2e6e72;
+            --teal-light: #3d8f94;
+            --teal-pale: #e0f0f1;
+            --red: #c0392b;
+            --red-pale: #fdecea;
+            --green: #2a7a43;
+            --green-pale: #d4f0db;
+            --white: #ffffff;
+            --border: rgba(26, 26, 46, 0.1);
+            --border-med: rgba(26, 26, 46, 0.15);
+            --shadow-sm: 0 2px 10px rgba(26, 26, 46, 0.07);
+            --shadow-md: 0 8px 28px rgba(26, 26, 46, 0.11);
+            --shadow-lg: 0 20px 56px rgba(26, 26, 46, 0.14);
+            --sidebar-w: 260px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            min-height: 100vh;
+        }
+
+        .asteriskField {
+            display: none;
+        }
+
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--ink);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 200;
+            transition: transform 0.3s;
+        }
+
+        .sidebar-logo {
+            padding: 1.6rem 1.5rem 1.3rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-logo-text {
+            font-family: serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .sidebar-logo-text span {
+            color: var(--accent);
+        }
+
+        .sidebar-section-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.28);
+            padding: 0 0.75rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 0.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 0.855rem;
+            font-weight: 400;
+            transition: background 0.18s, color 0.18s;
+            margin-bottom: 0.15rem;
+            cursor: pointer;
+        }
+
+        .sidebar-link:hover {
+            background: rgba(255, 255, 255, 0.07);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .sidebar-link.active {
+            background: rgba(196, 132, 58, 0.18);
+            color: var(--accent-light);
+        }
+
+        .sidebar-link .link-icon {
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding: 1rem 1.5rem 1.4rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .user {
+            text-decoration: none;
+            background-color: #353561;
+            border-radius: 4px;
+        }
+
+        .teacher-name {
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .teacher-role {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .main-wrapper {
+            margin-left: var(--sidebar-w);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: margin 0.3s;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(250, 248, 244, 0.95);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .topbar-breadcrumb {
+            font-size: 0.82rem;
+            color: var(--mist);
+        }
+
+        .topbar-breadcrumb a {
+            text-decoration: none;
+            color: var(--mist);
+            transition: color 0.2s;
+        }
+
+        .topbar-breadcrumb a:hover {
+            color: var(--accent);
+        }
+
+        .topbar-breadcrumb .current {
+            color: var(--ink);
+            font-weight: 500;
+        }
+
+        .btn-custom {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-family: sans-serif;
+            font-weight: 500;
+            transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-custom-primary {
+            background: var(--accent);
+            color: var(--white);
+            box-shadow: 0 3px 14px rgba(196, 132, 58, 0.25);
+        }
+
+        .btn-custom-primary:hover {
+            background: var(--accent-light);
+            color: var(--white);
+            box-shadow: 0 5px 20px rgba(196, 132, 58, 0.3);
+        }
+
+        .btn-custom-teal {
+            background: var(--teal);
+            color: var(--white);
+            box-shadow: 0 3px 14px rgba(46, 110, 114, 0.2);
+        }
+
+        .btn-custom-teal:hover {
+            background: var(--teal-light);
+            color: var(--white);
+        }
+
+        .btn-custom-danger {
+            background: var(--red-pale);
+            color: var(--red);
+            border: 1px solid rgba(192, 57, 43, 0.15);
+        }
+
+        .btn-custom-danger:hover {
+            background: #f8d7d3;
+            color: var(--red);
+        }
+
+        .course-header {
+            background: var(--ink);
+            border-radius: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-header::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(196, 132, 58, 0.15) 0%, transparent 70%);
+        }
+
+        .course-header::after {
+            content: '';
+            position: absolute;
+            bottom: -40px;
+            left: 30%;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(46, 110, 114, 0.12) 0%, transparent 70%);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.4
+            }
+        }
+
+        .course-title-wrap h1 {
+            font-family: serif;
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .course-desc {
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 0.875rem;
+            font-weight: 300;
+            max-width: 540px;
+            line-height: 1.6;
+        }
+
+        .btn-header-edit {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 1.1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: rgba(255, 255, 255, 0.8);
+            border-radius: 7px;
+            font-family: sans-serif;
+            font-size: 0.82rem;
+            font-weight: 500;
+            transition: background 0.18s;
+        }
+
+        .btn-header-edit:hover {
+            background: rgba(255, 255, 255, 0.16);
+            color: var(--white);
+        }
+
+        .nav-tabs-custom {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-tabs-custom .nav-link {
+            border: none;
+            border-bottom: 2.5px solid transparent;
+            color: var(--mist);
+            font-size: 0.865rem;
+            font-weight: 500;
+            padding: 0.75rem 1.4rem;
+            border-radius: 0;
+            background: transparent !important;
+        }
+
+        .nav-tabs-custom .nav-link:hover {
+            color: var(--slate);
+        }
+
+        .nav-tabs-custom .nav-link.active {
+            color: var(--accent) !important;
+            border-bottom-color: var(--accent);
+            font-weight: 600;
+        }
+
+        .content-section {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+
+        .content-section:hover {
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-head {
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+        }
+
+        .section-head:hover {
+            background: rgba(26, 26, 46, 0.02);
+        }
+
+        .section-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: var(--paper);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--ink);
+            flex-shrink: 0;
+        }
+
+        .section-name {
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .section-count {
+            font-size: 0.75rem;
+            color: var(--fog);
+        }
+
+        .icon-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: 1px solid transparent;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.15s, border-color 0.15s;
+            color: var(--mist);
+        }
+
+        .icon-btn:hover {
+            background: var(--paper);
+            border-color: var(--border);
+            color: var(--ink);
+        }
+
+        .icon-btn.delete:hover {
+            background: var(--red-pale);
+            border-color: rgba(192, 57, 43, 0.2);
+            color: var(--red);
+        }
+
+        .icon-btn.edit-btn:hover {
+            background: var(--accent-pale);
+            border-color: rgba(196, 132, 58, 0.2);
+            color: var(--accent);
+        }
+
+        .item-row {
+            padding: 0.65rem 0.6rem;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+
+        .item-row:last-child {
+            border-bottom: none;
+        }
+
+        .item-row:hover {
+            background: var(--paper);
+        }
+
+        .item-type-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+
+        .type-pdf {
+            background: #fde8e8;
+        }
+
+        .type-docx {
+            background: #ddeeff;
+        }
+
+        .type-pptx {
+            background: #fff0e0;
+        }
+
+        .type-xlsx {
+            background: #e0f5e9;
+        }
+
+        .type-eval {
+            background: var(--accent-pale);
+        }
+
+        .item-name {
+            font-size: 0.855rem;
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .item-meta {
+            font-size: 0.72rem;
+            color: var(--fog);
+            margin-top: 0.15rem;
+        }
+
+        .item-badge {
+            font-size: 0.68rem;
+            font-weight: 600;
+            padding: 0.2rem 0.55rem;
+            border-radius: 20px;
+            letter-spacing: 0.04em;
+            display: inline-block;
+        }
+
+        .badge-eval {
+            background: var(--accent-pale);
+            color: var(--accent);
+        }
+
+        .badge-pdf {
+            background: #fde8e8;
+            color: #c0392b;
+        }
+
+        .badge-doc {
+            background: #ddeeff;
+            color: #1a5fa5;
+        }
+
+        .item-actions {
+            opacity: 0;
+            transition: opacity 0.15s;
+        }
+
+        .item-row:hover .item-actions {
+            opacity: 1;
+        }
+
+        .add-item-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.6rem;
+            background: transparent;
+            border: 1.5px dashed var(--border-med);
+            border-radius: 8px;
+            color: var(--mist);
+            font-family: sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: border-color 0.18s, color 0.18s, background 0.18s;
+        }
+
+        .add-item-btn:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+            background: var(--teal-pale);
+        }
+
+        .add-section-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            width: 100%;
+            padding: 0.9rem;
+            background: var(--white);
+            border: 2px dashed var(--border-med);
+            border-radius: 14px;
+            color: var(--mist);
+            font-family: sans-serif;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .add-section-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-pale);
+        }
+
+        .table-custom {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .table-custom th {
+            background: var(--paper) !important;
+            padding: 0.75rem 1.1rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--mist);
+            border-bottom: 1px solid var(--border) !important;
+        }
+
+        .table-custom td {
+            padding: 0.85rem 1.1rem;
+            font-size: 0.855rem;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table-custom tr:last-child td {
+            border-bottom: none;
+        }
+
+        .student-fullname {
+            font-weight: 500;
+            color: var(--ink);
+            font-size: 0.855rem;
+        }
+
+        .student-email {
+            font-size: 0.72rem;
+            color: var(--fog);
+        }
+
+        .progress-cell .progress {
+            height: 5px;
+            background-color: var(--paper);
+            border-radius: 3px;
+        }
+
+        .progress-cell .progress-bar {
+            background-color: var(--teal);
+        }
+
+        .progress-pct {
+            font-size: 0.78rem;
+            color: var(--mist);
+            font-weight: 500;
+            width: 32px;
+            text-align: right;
+        }
+
+        .status-pill {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.25rem 0.65rem;
+            border-radius: 20px;
+            letter-spacing: 0.04em;
+        }
+
+        .pill-active {
+            background: var(--green-pale);
+            color: var(--green);
+        }
+
+        .pill-pending {
+            background: var(--accent-pale);
+            color: var(--accent);
+        }
+
+        .eval-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .eval-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .eval-card.type-vf::before {
+            background: linear-gradient(90deg, var(--teal), var(--teal-light));
+        }
+
+        .eval-card.type-mc::before {
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+        }
+
+        .eval-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .eval-type-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 0.25rem 0.6rem;
+            border-radius: 20px;
+        }
+
+        .tag-vf {
+            background: var(--teal-pale);
+            color: var(--teal);
+        }
+
+        .tag-mc {
+            background: var(--accent-pale);
+            color: var(--accent);
+        }
+
+        .eval-title {
+            font-family: serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--ink);
+            line-height: 1.3;
+        }
+
+        .eval-meta {
+            font-size: 0.78rem;
+            color: var(--fog);
+        }
+
+        .eval-stat-num {
+            font-family: serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        .eval-stat-label {
+            font-size: 0.68rem;
+            color: var(--fog);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.15rem;
+        }
+
+        .eval-divider {
+            width: 1px;
+            background: var(--border);
+            height: 30px;
+        }
+
+        @media (max-width: 991.98px) {
+            .main-wrapper {
+                margin-left: 0;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+        }
+
+        #modalAssessment .modal-content {
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+            background: var(--cream);
+            box-shadow: 0 24px 56px rgba(26, 26, 46, 0.16);
+        }
+
+        #modalAssessment .form-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--slate);
+            letter-spacing: .03em;
+            margin-bottom: .45rem;
+        }
+
+        #modalAssessment .form-control,
+        #modalAssessment .form-select,
+        #modalAssessment input,
+        #modalAssessment textarea,
+        #modalAssessment select {
+            width: 100%;
+            padding: .70rem .95rem;
+            border-radius: 10px;
+            border: 1.5px solid var(--border-med);
+            background: var(--paper);
+            color: var(--ink);
+            font-size: .875rem;
+            transition: all .18s ease;
+            box-shadow: none;
+        }
+
+        #modalAssessment .form-control:focus,
+        #modalAssessment textarea:focus,
+        #modalAssessment input:focus,
+        #modalAssessment select:focus {
+            border-color: var(--teal);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(46, 110, 114, .10);
+            outline: none;
+        }
+
+        #modalAssessment textarea {
+            min-height: 90px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        #modalAssessment .card {
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: var(--white);
+            padding: 1.4rem;
+            margin-bottom: 1rem;
+            overflow: visible;
+        }
+
+        #modalAssessment .card-header {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 1.25rem;
+        }
+
+        #modalAssessment .card-body {
+            padding: 1.25rem;
+        }
+
+        #modalAssessment .card-header-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        #modalAssessment .card .form-label {
+            display: block;
+            margin-bottom: 0.55rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--slate);
+        }
+
+        #modalAssessment .card .mb-3,
+        #modalAssessment .card .mb-4 {
+            margin-bottom: 1.25rem !important;
+        }
+
+        #modalAssessment .icon-teal {
+            background: var(--teal-pale);
+        }
+
+        #modalAssessment .icon-ink {
+            background: rgba(26, 26, 46, 0.07);
+        }
+
+        #modalAssessment .student-count-badge {
+            background: var(--ink);
+            color: white;
+            font-size: .72rem;
+            font-weight: 600;
+            padding: .22rem .65rem;
+            border-radius: 999px;
+        }
+
+        #modalAssessment .students-list {
+            max-height: 240px;
+            overflow-y: auto;
+        }
+
+        #modalAssessment .student-row {
+            display: flex;
+            align-items: center;
+            gap: .7rem;
+            padding: .65rem .75rem;
+            border-radius: 10px;
+            border: 1.5px solid var(--border);
+            background: var(--cream);
+            transition: .15s ease;
+            cursor: pointer;
+        }
+
+        #modalAssessment .student-row:hover {
+            border-color: var(--teal);
+            background: var(--teal-pale);
+        }
+
+        #modalAssessment .student-row input[type="checkbox"] {
+            accent-color: var(--teal);
+            width: 16px;
+            height: 16px;
+        }
+
+        #modalAssessment .stud-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--teal), var(--accent));
+            color: white;
+            font-size: .7rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #modalAssessment .stud-name {
+            font-size: .82rem;
+            color: var(--ink);
+        }
+
+        #modalAssessment button[type="submit"] {
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            padding: .95rem 1rem;
+            background: var(--accent);
+            color: white;
+            font-size: .9rem;
+            font-weight: 600;
+            transition: all .2s ease;
+            box-shadow: 0 4px 18px rgba(196, 132, 58, .28);
+            margin-top: .5rem;
+        }
+
+        #modalAssessment button[type="submit"]:hover {
+            background: var(--accent-light);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 22px rgba(196, 132, 58, .35);
+        }
+
+        #modalAssessment .students-list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        #modalAssessment .students-list::-webkit-scrollbar-thumb {
+            background: var(--border-med);
+            border-radius: 10px;
+        }
+
+        #modalAssessment .modal-dialog {
+            max-width: 1100px;
+        }
+
+        #modalAssessment .students-list {
+            max-height: 500px;
+        }
+
+        .student-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 0.9rem;
+            border-radius: 10px;
+            border: 1.5px solid var(--border);
+            background: var(--cream);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .student-row:hover {
+            border-color: var(--teal);
+            background: var(--teal-pale);
+        }
+
+        .student-row.included {
+            border-color: var(--teal);
+            background: var(--teal-pale);
+        }
+
+        .student-row.excluded {
+            opacity: 0.72;
+        }
+
+        .student-row input[type="checkbox"] {
+            width: 15px;
+            height: 15px;
+            margin: 0;
+            accent-color: var(--teal);
+            flex-shrink: 0;
+        }
+
+        .stud-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--teal), var(--accent));
+            color: white;
+            font-size: 0.68rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .stud-name {
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--ink);
+            line-height: 1.2;
+        }
+
+        #modalAssessment .row.g-4 {
+            align-items: stretch;
+        }
+
+        #modalAssessment .col-xl-8,
+        #modalAssessment .col-xl-4 {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #modalAssessment .col-xl-8 .card,
+        #modalAssessment .col-xl-4 .card {
+            width: 100%;
+        }
+    </style>
 </head>
 
 <body>
@@ -327,30 +1307,202 @@
 
     <div class="modal fade" id="modalAssessment" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content p-2" style="border-radius: 18px;">
+            <div class="modal-content p-4" style="border-radius: 18px;">
+
                 <form method="POST">
                     {% csrf_token %}
-                    <input type="hidden" name="asmt_id" id="edit_asmt_id">
+                    <input type="hidden" name="save_asmt">
+                    <input type="hidden" name="questions_data" id="questions-data">
                     <input type="hidden" name="section_id" id="hidden_section_id_asmt">
-                    <div class="modal-header border-bottom-0 pb-0">
-                        <h5 class="modal-title fs-5">
-                            Nueva Evaluación
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+
+                    <div class="row g-4">
+                        <div class="col-12 col-xl-8 d-flex flex-column">
+                            <div class="card mb-4 flex-grow-1">
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        Título
+                                    </label>
+                                    {{ assessment_form.title }}
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">
+                                        Descripción
+                                    </label>
+                                    {{ assessment_form.description }}
+                                </div>
+                            </div>
+
+                            <div class="card flex-grow-1">
+                                <div class="card-header d-flex align-items-center gap-3">
+                                    <div class="card-header-icon icon-teal">🗓</div>
+                                    <div>
+                                        <div class="fw-bold text-dark" style="font-size: 0.9rem;">
+                                            Programación
+                                        </div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">
+                                            Fecha, hora y duración
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body p-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            Fecha de inicio
+                                        </label>
+                                        {{ assessment_form.start_date }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            Hora de inicio
+                                        </label>
+                                        {{ assessment_form.start_time }}
+                                    </div>
+                                    <div class="mb-0">
+                                        <label class="form-label">
+                                            Duración
+                                        </label>
+                                        {{ assessment_form.duration }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mt-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-bold text-dark" style="font-size: 0.9rem;">
+                                            Preguntas
+                                        </div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">
+                                            Agrega preguntas VF o selección múltiple
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-primary" onclick="openQuestionModal()">
+                                        + Agregar
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <div id="questions-container" class="d-flex flex-column gap-3">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-12 col-xl-4">
+                            <div class="card">
+                                <div class="card-header d-flex align-items-center justify-content-between gap-2">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="card-header-icon icon-ink">
+                                            👥
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold text-dark" style="font-size: 0.9rem;">
+                                                Estudiantes asignados
+                                            </div>
+                                            <div class="text-muted" style="font-size: 0.75rem;">
+                                                Selecciona quién realiza la evaluación
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="student-count-badge">
+                                        {{ assessment_form.students.field.queryset.count }}
+                                    </span>
+                                </div>
+                                <div class="card-body p-4 pt-3">
+                                    <div class="students-list d-flex flex-column gap-1">
+                                        {% for checkbox in assessment_form.students %}
+                                        <label
+                                            class="student-row {% if checkbox.data.selected %}included{% else %} excluded{% endif %}">
+                                            <input type="checkbox" name="{{ checkbox.data.name }}"
+                                                value="{{ checkbox.data.value }}" {% if checkbox.data.selected%} checked
+                                                {% endif %}>
+                                            <div class="stud-avatar">
+                                                {{ checkbox.choice_label|slice:":2"|upper }}
+                                            </div>
+                                            <span class="stud-name">
+                                                {{ checkbox.choice_label }}
+                                            </span>
+                                        </label>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
-                    <div class="modal-body">
-                        {% crispy assessment_form %}
-                    </div>
-                    <div class="modal-footer border-top-0 pt-0">
-                        <button type="button" class="btn btn-sm btn-light px-3" data-bs-dismiss="modal">
-                            Cancelar
-                        </button>
-                        <button type="submit" name="save_asmt" class="btn btn-sm btn-custom-primary px-3">
+
+                    <div class="mt-4">
+                        <button type="submit">
                             Guardar
                         </button>
                     </div>
+
                 </form>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="questionModal" tabindex="-1" aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-4">
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        Tipo de pregunta
+                    </label>
+                    <select id="question-type" class="form-select" onchange="toggleQuestionType()">
+                        <option value="vf">
+                            Verdadero/Falso
+                        </option>
+                        <option value="mc">
+                            Selección múltiple
+                        </option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        Enunciado
+                    </label>
+                    <textarea id="question-text" class="form-control"></textarea>
+                </div>
+
+                <div id="vf-area">
+                    <label class="form-label">
+                        Respuesta correcta
+                    </label>
+                    <select id="vf-answer" class="form-select">
+                        <option value="true">
+                            Verdadero
+                        </option>
+                        <option value="false">
+                            Falso
+                        </option>
+                    </select>
+                </div>
+
+                <div id="mc-area" style="display:none;">
+                    <label class="form-label">
+                        Opciones
+                    </label>
+                    <div id="mc-options-container" class="d-flex flex-column gap-2">
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="addOption()">
+                        + Opción
+                    </button>
+                </div>
+
+                <div class="mt-4 d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="saveQuestion()">
+                        Guardar
+                    </button>
+                </div>
+
             </div>
         </div>
     </div>
@@ -412,20 +1564,136 @@
                 }
             });
 
-            const modalAssessment =
-                document.getElementById('modalAssessment');
-            modalAssessment.addEventListener(
-                'show.bs.modal',
-                function (event) {
-                    const button = event.relatedTarget;
-                    const sectionId =
-                        button.getAttribute('data-section-id');
-                    document.getElementById(
-                        'hidden_section_id_asmt'
-                    ).value = sectionId;
-                }
-            );
+            const modalAssessment = document.getElementById('modalAssessment');
+            modalAssessment.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                if (!button) return;
+                const sectionId = button.getAttribute('data-section-id');
+                document.getElementById('hidden_section_id_asmt').value = sectionId;
+            });
         });
+
+        let questions = [];
+
+        const questionModal =
+            new bootstrap.Modal(
+                document.getElementById('questionModal')
+            );
+
+        function openQuestionModal() {
+            resetQuestionModal();
+            questionModal.show();
+        }
+
+        function toggleQuestionType() {
+            const type =
+                document.getElementById('question-type').value;
+            document.getElementById('vf-area').style.display =
+                type === 'vf' ? 'block' : 'none';
+            document.getElementById('mc-area').style.display =
+                type === 'mc' ? 'block' : 'none';
+        }
+
+        function addOption() {
+            const container =
+                document.getElementById('mc-options-container');
+
+            const index =
+                container.children.length;
+
+            const div =
+                document.createElement('div');
+
+            div.className = 'd-flex gap-2';
+
+            div.innerHTML = `
+                <input type="text" class="form-control option-text" placeholder="Texto opción">
+                <input type="radio" name="correct-option" value="${index}">
+            `;
+
+            container.appendChild(div);
+        }
+
+        function saveQuestion() {
+            const type = document.getElementById('question-type').value;
+
+            const text = document.getElementById('question-text').value;
+
+            if (!text.trim()) {
+                alert('Debes escribir la pregunta');
+                return;
+            }
+
+            let question = {
+                type: type,
+                text: text
+            };
+
+            if (type === 'vf') {
+                question.vfAnswer =
+                    document.getElementById('vf-answer').value === 'true';
+            }
+
+            if (type === 'mc') {
+                const options = [];
+
+                document.querySelectorAll('#mc-options-container > div')
+                    .forEach((row, idx) => {
+                        const text = row.querySelector('.option-text').value;
+                        const correct = row.querySelector('input[type="radio"]').checked;
+
+                        options.push({
+                            letter: String.fromCharCode(65 + idx),
+                            text: text,
+                            correct: correct
+                        });
+                    });
+
+                question.mcOptions = options;
+            }
+
+            questions.push(question);
+            renderQuestions();
+            questionModal.hide();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+
+            container.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                const div = document.createElement('div');
+
+                div.className = 'border rounded p-3';
+
+                div.innerHTML = `
+                    <div class="fw-bold">
+                        ${index + 1}. ${q.text}
+                    </div>
+
+                    <div class="text-muted small">
+                        ${q.type === 'vf'
+                        ? 'Verdadero/Falso'
+                        : 'Selección múltiple'}
+                    </div>
+                `;
+
+                container.appendChild(div);
+            });
+
+            document.getElementById('questions-data').value =
+                JSON.stringify(questions);
+        }
+
+        function resetQuestionModal() {
+            document.getElementById('question-text').value = '';
+            document.getElementById('question-type').value = 'vf';
+            document.getElementById('vf-answer').value = 'true';
+            document.getElementById('mc-options-container').innerHTML = '';
+
+            toggleQuestionType();
+        }
     </script>
 </body>
 

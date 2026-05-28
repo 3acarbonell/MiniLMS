@@ -106,9 +106,27 @@ class AssessmentForm(forms.ModelForm):
         fields = ['title', 'description', 'start_date',
                   'start_time', 'duration', 'students']
         widgets = {
-            'start_date': forms.DateInput(attrs={'type': 'date'}),
-            'start_time': forms.TimeInput(attrs={'type': 'time'}),
-            'students': forms.CheckboxSelectMultiple
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ej. Evaluación Final'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Instrucciones o contexto...',
+            }),
+            'start_date': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'form-control'
+            }),
+            'start_time': forms.TimeInput(attrs={
+                'type': 'time',
+                'class': 'form-control'
+            }),
+            'duration': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'min': 5,
+                'max': 240
+            }),
         }
 
     def __init__(self, *args, course=None, **kwargs):
@@ -120,4 +138,34 @@ class AssessmentForm(forms.ModelForm):
         self.fields['students'].queryset = User.objects.none()
 
         if course:
-            self.fields['students'].queryset = (course.students.all())
+            self.fields['students'].queryset = course.students.all()
+
+            self.fields['students'].initial = (
+                course.students.values_list('id', flat=True)
+            )
+
+        self.helper.layout = Layout(
+            Div(
+                Div(
+                    Div(
+                        Field(
+                            'start_date'
+                        ),
+                        css_class='assessment-start-date'
+                    ),
+                    Div(
+                        Field(
+                            'start_time'
+                        ),
+                        css_class='assessment-start-time'
+                    ),
+                    css_class='row'
+                ),
+                Div(
+                    Field(
+                        'duration',
+                    ),
+                    css_class='assessment-duration'
+                ),
+            )
+        )

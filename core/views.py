@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import CreateView
 
-from .models import Course, Section, ContentBlock, Assessment
+from .models import Course, Section, ContentBlock, Assessment, Question, Choice
 from .forms import AssessmentForm, CourseForm, RegisterForm, SectionForm, ContentBlockForm
 
 
@@ -156,13 +156,35 @@ def course_teacher(request, course_id):
             form = AssessmentForm(
                 request.POST, instance=instance, course=course)
 
-            print(form.errors)
-
             if form.is_valid():
                 asmt = form.save(commit=False)
                 asmt.section = get_object_or_404(Section, id=section_id)
                 asmt.save()
                 form.save_m2m()
+
+                questions_data = request.POST.get('questions_data')
+
+                if questions_data:
+                    questions = json.loads(questions_data)
+
+                    asmt.questions.all().delete()
+
+                    for q in questions:
+                        question = Question.objects.create(
+                            assessment=asmt,
+                            question_type=q['type'],
+                            text=q['text'],
+                            vf_answer=q.get('vfAnswer')
+                        )
+
+                        if q['type'] == 'mc':
+                            for option in q['mcOptions']:
+                                Choice.objects.create(
+                                    question=question,
+                                    letter=option['letter'],
+                                    text=option['text'],
+                                    is_correct=option['correct']
+                                )
 
             return redirect('core:course_teacher', course_id=course.id)
 
@@ -208,104 +230,3 @@ def course_teacher_delete(request, item_type, item_id):
         return redirect('core:course_teacher', course_id=course_id)
 
     return redirect('course_teacher_delete', course_id=course_id)
-
-
-""""
-@login_required
-def exam_teacher_creation(request):
-    teacher = request.user
-
-    if request.method == 'POST':
-        form = AssessmentForm(request.POST, course=course)
-        if form.is_valid():
-            form.save()
-            return redirect('core:dashboard_teacher')
-        else:
-            print(form.errors)
-    else:
-        form = AssessmentForm(course=course)
-
-    courses = Course.objects.filter(
-        teacher=teacher
-    ).prefetch_related('students')
-
-    course_students = {}
-    course_sections = {}
-
-    for course in courses:
-        course_students[course.id] = [
-            {
-                'id': student.id,
-                'username': student.username
-            }
-            for student in course.students.all()
-        ]
-
-        course_sections[course.id] = [
-            {
-                'id': section.id,
-                'title': section.title
-            }
-            for section in course.sections.all()
-        ]
-
-    return render(request, 'core/exam/teacher/exam_creation.html', {
-        'form': form,
-        'course_students': json.dumps(course_students),
-        'course_sections': json.dumps(course_sections)
-    })
-
-
-
-@login_required
-def exam_teacher_creation(request):
-    if request.user.role != 'teacher':
-        return redirect('core:dashboard_teacher')
-
-    if request.method == 'POST':
-        form = ExamCreationForm(request.POST)
-        questions_json = request.POST.get('questions_json', '[]')
-        assigned_students = request.POST.getlist('assigned_students')
-
-        if form.is_valid():
-            exam = form.save()
-
-            if assigned_students:
-                exam.students.set(assigned_students)
-
-            try:
-                questions_data = json.loads(questions_json)
-
-                for q in questions_data:
-                    question = QuestionCreation.objects.create(
-                        exam=exam,
-                        question_type=q.get('type'),
-                        text=q.get('text'),
-                        vf_answer=q.get('vf_answer') if q.get('type') == 'vf' else None)
-
-                    if q.get('type') == 'mc':
-                        for opt in q.get('mcOptions', []):
-                            ChoiceCreation.objects.create(
-                                question=question,
-                                text=opt.get('text'),
-                                is_correct=opt.get('correct'),
-                                letter=opt.get('letter')
-                            )
-
-                return redirect('core:dashboard_teacher')
-            except:
-                form.add_error(
-                    None, "Hubo un problema procesando la estructura de las preguntas.")
-
-            return redirect('dashboard')
-    else:
-    form = ExamCreationForm()
-    sections = Section.objects.all()
-    students = User.objects.all()
-
-    return render(request, 'core/exam/teacher/exam_creation.html', {
-        'form': form,
-        'sections': sections,
-        'students': students,
-    })
-"""

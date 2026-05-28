@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 
 
-from core.models import Course, Section, ContentBlock, Assessment
+from core.models import Choice, Course, Question, Section, ContentBlock, Assessment
 
 
 import random
@@ -95,7 +95,85 @@ class Command(BaseCommand):
                 course.students.all()
             )
 
+            self.create_questions(assessment)
+
         self.stdout.write(self.style.SUCCESS(
-            f'\t-> Estructura (Secciones/Textos/Tests) '
+            f'\t-> Estructura (Secciones/Textos/Tests/Preguntas)'
             f'generada para {course.title}'
         ))
+
+    def create_questions(self, assessment):
+        Question.objects.create(
+            assessment=assessment,
+            question_type='vf',
+            text='HTML es un lenguaje de programación.',
+            vf_answer=False
+        )
+
+        q1 = Question.objects.create(
+            assessment=assessment,
+            question_type='mc',
+            text='¿Qué significa CSS?'
+        )
+
+        Choice.objects.create(
+            question=q1,
+            letter='A',
+            text='Cascading Style Sheets',
+            is_correct=True
+        )
+
+        Choice.objects.create(
+            question=q1,
+            letter='B',
+            text='Computer Style System',
+            is_correct=False
+        )
+
+        Choice.objects.create(
+            question=q1,
+            letter='C',
+            text='Creative Style Syntax',
+            is_correct=False
+        )
+
+        Choice.objects.create(
+            question=q1,
+            letter='D',
+            text='Color Sheet Structure',
+            is_correct=False
+        )
+
+        q2 = Question.objects.create(
+            assessment=assessment,
+            question_type='mc',
+            text='¿Cuál de estos es un framework backend de Python?'
+        )
+
+        Choice.objects.create(
+            question=q2,
+            letter='A',
+            text='Laravel',
+            is_correct=False
+        )
+
+        Choice.objects.create(
+            question=q2,
+            letter='B',
+            text='React',
+            is_correct=False
+        )
+
+        Choice.objects.create(
+            question=q2,
+            letter='C',
+            text='Django',
+            is_correct=True
+        )
+
+        Choice.objects.create(
+            question=q2,
+            letter='D',
+            text='Bootstrap',
+            is_correct=False
+        )
