@@ -26,7 +26,7 @@ def register(request):
     else:
         form = RegisterForm()
 
-    return render(request, "core/registration/register.html", {'form': form})
+    return render(request, "core/registration/login.html", {'form': form})
 
 
 class Login(LoginView):
@@ -47,7 +47,6 @@ class Login(LoginView):
         return super().form_invalid(form)
 
     def form_valid(self, form):
-        # messages.success(self.request, "Bienvenido de nuevo")
         return super().form_valid(form)
 
 

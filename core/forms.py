@@ -32,7 +32,10 @@ class RegisterForm(UserCreationForm):
             'email',
             'password1',
             'password2',
-            Submit('submit', 'Crear cuenta', css_class='btn btn-login')
+            Row(
+                Submit('submit', 'Crear cuenta', css_class='btn submit-btn'),
+                css_class="justify-content-center text-center mt-4"
+            ),
         )
 
 
