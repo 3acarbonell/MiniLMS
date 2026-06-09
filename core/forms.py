@@ -172,3 +172,25 @@ class AssessmentForm(forms.ModelForm):
                 ),
             )
         )
+
+
+class TakeAssessmentForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.assessment = kwargs.pop('assessment', None)
+        super().__init__(*args, **kwargs)
+
+        if self.assessment:
+
+            for question in self.assessment.questions.all():
+                field_name = f'question_{question.id}'
+
+                if question.question_type == 'vf':
+                    self.fields[field_name] = forms.ChoiceField(
+                        choices=[('True', 'Verdadero'), ('False', 'Falso')], widget=forms.RadioSelect, required=False, label=question.text)
+
+                elif question.question_type == 'mc':
+                    choices = [(str(choice.id), choice.text)
+                               for choice in question.choices.all()]
+
+                    self.fields[field_name] = forms.ChoiceField(
+                        choices=choices, widget=forms.RadioSelect, required=False, label=question.text)

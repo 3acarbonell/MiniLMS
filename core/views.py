@@ -7,9 +7,10 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import CreateView
+from django.db.models import Sum, Avg
 
-from .models import Course, Section, ContentBlock, Assessment, Question, Choice
-from .forms import AssessmentForm, CourseForm, RegisterForm, SectionForm, ContentBlockForm
+from .models import Course, Grade, Section, ContentBlock, Assessment, Question, Choice, StudentAnswer
+from .forms import AssessmentForm, CourseForm, RegisterForm, SectionForm, ContentBlockForm, TakeAssessmentForm
 
 
 # Create your views here.
@@ -173,7 +174,8 @@ def course_teacher(request, course_id):
                             assessment=asmt,
                             question_type=q['type'],
                             text=q['text'],
-                            vf_answer=q.get('vfAnswer')
+                            vf_answer=q.get('vfAnswer'),
+                            points=q.get('points', 1.0)
                         )
 
                         if q['type'] == 'mc':
@@ -185,10 +187,16 @@ def course_teacher(request, course_id):
                                     is_correct=option['correct']
                                 )
 
+            asmt.update_max_score()
+
             return redirect('core:course_teacher', course_id=course.id)
+
+    assessments = Assessment.objects.filter(
+        section__course=course).prefetch_related('grades__student')
 
     context = {
         'course': course,
+        'assessments': assessments,
         'section_form': SectionForm(),
         'block_form': ContentBlockForm(),
         'assessment_form': AssessmentForm(
@@ -229,3 +237,89 @@ def course_teacher_delete(request, item_type, item_id):
         return redirect('core:course_teacher', course_id=course_id)
 
     return redirect('course_teacher_delete', course_id=course_id)
+
+
+@login_required
+def take_assessment_view(request, assessment_id):
+    assessment = get_object_or_404(Assessment, id=assessment_id)
+
+    if Grade.objects.filter(assessment=assessment, student=request.user).exists():
+        return redirect('core:course_student_grades', course_id=assessment.section.course.id)
+
+    if request.method == 'POST':
+        form = TakeAssessmentForm(request.POST, assessment=assessment)
+        if form.is_valid():
+            for question in assessment.questions.all():
+                field_name = f'question_{question.id}'
+                user_choice = form.cleaned_data.get(field_name)
+
+                if user_choice:
+                    answer, _ = StudentAnswer.objects.get_or_create(
+                        student=request.user, question=question)
+
+                    if question.question_type == 'vf':
+                        answer.vf_answer = (user_choice == 'True')
+                    elif question.question_type == 'mc':
+                        answer.selected_choice_id = int(user_choice)
+
+                    answer.save()
+
+            total_points = assessment.questions.aggregate(
+                total=Sum('points'))['total'] or 0
+            points_obtained = 0
+
+            student_answers = StudentAnswer.objects.filter(
+                student=request.user, question__assessment=assessment)
+
+            for ans in student_answers:
+                q = ans.question
+
+                if q.question_type == 'vf' and ans.vf_answer == q.vf_answer:
+                    points_obtained += q.points
+                elif q.question_type == 'mc' and ans.selected_choice and ans.selected_choice.is_correct:
+                    points_obtained += q.points
+
+            if total_points > 0:
+                student_score = (float(points_obtained) / float(total_points)) * \
+                    float(assessment.max_score)
+            else:
+                student_score = 0
+
+            Grade.objects.create(
+                assessment=assessment,
+                student=request.user,
+                score=round(student_score)
+            )
+
+            return redirect('core:course_student_grades', course_id=assessment.section.course.id)
+    else:
+        form = TakeAssessmentForm(assessment=assessment)
+
+    return render(request, 'core/exam/student/exam.html', {
+        'assessment': assessment,
+        'form': form,
+    })
+
+
+@login_required
+def course_student_grades(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+
+    assessments = Assessment.objects.filter(
+        section__course=course).select_related('section')
+
+    grades_report = []
+
+    for assessment in assessments:
+        grade = Grade.objects.filter(
+            assessment=assessment, student=request.user).first()
+
+        grades_report.append({
+            'assessment': assessment,
+            'grade': grade
+        })
+
+    return render(request, 'core/course/student/course_grades.html', {
+        'course': course,
+        'grades_report': grades_report
+    })

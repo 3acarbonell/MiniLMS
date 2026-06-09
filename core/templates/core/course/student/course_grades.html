@@ -1,0 +1,407 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calificaciones — {{ course.title }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a2e;
+            --ink-light: #2d2d4a;
+            --slate: #3d3d5c;
+            --mist: #6b6b8a;
+            --fog: #a8a8c0;
+            --paper: #f4f2ee;
+            --cream: #faf8f4;
+            --accent: #c4843a;
+            --accent-light: #d9a563;
+            --accent-pale: #f5e8d6;
+            --teal: #2e6e72;
+            --teal-light: #3d8f94;
+            --teal-pale: #e0f0f1;
+            --white: #ffffff;
+            --border: rgba(26, 26, 46, 0.08);
+            --border-med: rgba(26, 26, 46, 0.15);
+            --shadow-sm: 0 2px 10px rgba(26, 26, 46, 0.05);
+            --shadow-md: 0 8px 28px rgba(26, 26, 46, 0.08);
+            --shadow-lg: 0 20px 56px rgba(26, 26, 46, 0.12);
+            --sidebar-w: 260px;
+        }
+
+        body {
+            font-family: sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--ink);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 200;
+        }
+
+        .sidebar-logo {
+            padding: 1.6rem 1.5rem 1.3rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-logo-text {
+            font-family: serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .sidebar-logo-text span {
+            color: var(--accent);
+        }
+
+        .sidebar-section-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.28);
+            padding: 0 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.7rem 0.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 0.855rem;
+            transition: all 0.2s;
+            margin-bottom: 0.2rem;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: rgba(255, 255, 255, 0.07);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .sidebar-link.active {
+            background: rgba(196, 132, 58, 0.15);
+            color: var(--accent-light);
+            font-weight: 500;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding: 1rem 1rem 1.4rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .user {
+            text-decoration: none;
+            background-color: rgba(255, 255, 255, 0.04);
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .user:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .student-name {
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .student-role {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .main-layout-wrapper {
+            margin-left: var(--sidebar-w);
+            padding: 2.5rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-section {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-med);
+            padding-bottom: 1.5rem;
+        }
+
+        .header-subtitle {
+            color: var(--accent);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--ink);
+            font-size: 2.25rem;
+            margin: 0;
+        }
+
+        .grades-card {
+            background-color: var(--white);
+            border: 1px solid var(--border-med);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .grades-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+
+        .grades-table th {
+            color: var(--slate);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--paper);
+        }
+
+        .grades-row {
+            background-color: var(--cream);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .grades-row:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .grades-table td {
+            padding: 16px;
+            vertical-align: middle;
+        }
+
+        .grades-table tr td:first-child {
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+
+        .grades-table tr td:last-child {
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        .eval-title {
+            font-weight: 600;
+            color: var(--ink);
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+
+        .eval-section {
+            font-size: 0.8rem;
+            color: var(--mist);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .badge-graded {
+            background-color: var(--teal-pale);
+            color: var(--teal);
+        }
+
+        .badge-pending {
+            background-color: var(--paper);
+            color: var(--slate);
+        }
+
+        .score-container {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 2px;
+        }
+
+        .score-highlight {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--teal);
+        }
+
+        .score-max {
+            color: var(--mist);
+            font-size: 0.85rem;
+        }
+
+        .feedback-text {
+            font-size: 0.85rem;
+            color: var(--slate);
+            font-style: italic;
+            max-width: 280px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .no-feedback {
+            color: var(--fog);
+            font-size: 0.85rem;
+        }
+
+        .btn-back {
+            background-color: var(--white);
+            border: 1px solid var(--border-med);
+            color: var(--slate);
+            padding: 10px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-back:hover {
+            background-color: var(--ink);
+            border-color: var(--ink);
+            color: var(--white);
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo d-flex align-items-center justify-content-between">
+            <a class="sidebar-logo-text" href="{% url 'landing_page:index' %}">Mini<span>LMS</span></a>
+        </div>
+        <div class="p-3">
+            <div class="sidebar-section-label">Navegación</div>
+            <a href="{% url 'core:dashboard_student' %}" class="sidebar-link">
+                <span class="link-icon">🏠</span> Panel General
+            </a>
+            <a href="{% url 'core:course_student_grades' course.id %}" class="sidebar-link active">
+                <span class="link-icon">✏️</span> Evaluaciones
+            </a>
+        </div>
+
+        <div class="sidebar-bottom">
+            <a href="{% url 'core:account' %}" class="d-flex p-2 user align-items-center">
+                <div class="d-flex align-items-center">
+                    <img src="https://ui-avatars.com/api/?name={{ user.first_name }}+{{ user.last_name }}&background=1d293d&color=fff&size=32"
+                        alt="User Avatar" class="rounded-circle border border-secondary-subtle" width="32px"
+                        height="32px">
+                </div>
+                <div class="px-2 overflow-hidden">
+                    <div class="student-name text-truncate">{{ user.first_name }} {{ user.last_name }}</div>
+                    <div class="student-role">Estudiante</div>
+                </div>
+            </a>
+        </div>
+    </aside>
+
+    <div class="main-layout-wrapper">
+
+        <div class="header-section d-flex justify-content-between align-items-center">
+            <div>
+                <div class="header-subtitle">{{ course.title }}</div>
+                <h1 class="header-title">Mis Calificaciones</h1>
+            </div>
+            <div>
+                <a href="{% url 'core:course_student' course.pk %}" class="btn-back">← Volver al Curso</a>
+            </div>
+        </div>
+
+        <div class="grades-card">
+            {% if grades_report %}
+            <div class="table-responsive">
+                <table class="grades-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40%;">Evaluación</th>
+                            <th style="width: 15%;">Estado</th>
+                            <th style="width: 20%; text-align: center;">Nota Obtenida</th>
+                            <th style="width: 25%;">Retroalimentación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in grades_report %}
+                        <tr class="grades-row">
+                            <td>
+                                <div class="eval-title">{{ item.assessment.title }}</div>
+                                <div class="eval-section">{{ item.assessment.section.title }}</div>
+                            </td>
+
+                            <td>
+                                {% if item.grade %}
+                                <span class="status-badge badge-graded">Calificado</span>
+                                {% else %}
+                                <span class="status-badge badge-pending">Sin Rendir</span>
+                                {% endif %}
+                            </td>
+
+                            <td class="text-center">
+                                {% if item.grade %}
+                                <div class="score-container">
+                                    <span class="score-highlight">{{ item.grade.score }}</span>
+                                    <span class="score-max">/ {{ item.assessment.max_score }}</span>
+                                </div>
+                                {% else %}
+                                <span class="score-max">—</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if item.grade and item.grade.feedback %}
+                                <div class="feedback-text" title="{{ item.grade.feedback }}">
+                                    "{{ item.grade.feedback }}"
+                                </div>
+                                {% elif item.grade %}
+                                <span class="no-feedback">Sin comentarios</span>
+                                {% else %}
+                                <span class="no-feedback">—</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <span style="font-size: 2.5rem;">📋</span>
+                <h5 class="mt-3 text-muted">No hay evaluaciones programadas para este curso todavía.</h5>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

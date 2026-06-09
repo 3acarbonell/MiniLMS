@@ -1,0 +1,1399 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini LMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --ink: #1a1a2e;
+            --ink-light: #2d2d4a;
+            --slate: #3d3d5c;
+            --mist: #6b6b8a;
+            --fog: #a8a8c0;
+            --paper: #f4f2ee;
+            --cream: #faf8f4;
+            --accent: #c4843a;
+            --accent-light: #d9a563;
+            --accent-pale: #f5e8d6;
+            --teal: #2e6e72;
+            --teal-light: #3d8f94;
+            --teal-pale: #e0f0f1;
+            --green: #2a7a43;
+            --green-pale: #d4f0db;
+            --red: #c0392b;
+            --red-pale: #fdecea;
+            --white: #ffffff;
+            --border: rgba(26, 26, 46, 0.10);
+            --border-med: rgba(26, 26, 46, 0.16);
+            --shadow-sm: 0 2px 10px rgba(26, 26, 46, 0.07);
+            --shadow-md: 0 8px 28px rgba(26, 26, 46, 0.11);
+            --shadow-lg: 0 24px 56px rgba(26, 26, 46, 0.16);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ══════════════════════════════
+     TOP BAR
+    ══════════════════════════════ */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            background: var(--ink);
+            padding: 0 2.5rem;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .topbar-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: -0.01em;
+            flex-shrink: 0;
+        }
+
+        .topbar-logo span {
+            color: var(--accent);
+        }
+
+        .topbar-divider {
+            width: 1px;
+            height: 22px;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .topbar-eval-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.65);
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .topbar-eval-name strong {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .timer-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            padding: 0.4rem 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .timer-icon {
+            font-size: 0.85rem;
+        }
+
+        .timer-val {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: 0.04em;
+            min-width: 52px;
+        }
+
+        .timer-val.warning {
+            color: #fbbf24;
+        }
+
+        .timer-val.danger {
+            color: #f87171;
+            animation: timerPulse 1s infinite;
+        }
+
+        @keyframes timerPulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.5
+            }
+        }
+
+        .topbar-student {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            flex-shrink: 0;
+        }
+
+        .student-avatar-sm {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--teal), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .student-name-sm {
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+        }
+
+        /* ══════════════════════════════
+     PROGRESS BAR
+    ══════════════════════════════ */
+        .global-progress {
+            height: 4px;
+            background: rgba(26, 26, 46, 0.08);
+            position: relative;
+        }
+
+        .global-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--teal), var(--accent));
+            transition: width 0.4s ease;
+            border-radius: 0 2px 2px 0;
+        }
+
+        /* ══════════════════════════════
+     LAYOUT
+    ══════════════════════════════ */
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 0;
+            flex: 1;
+            align-items: start;
+        }
+
+        /* ══════════════════════════════
+     QUESTION AREA
+    ══════════════════════════════ */
+        .question-area {
+            padding: 2.5rem 3rem 4rem;
+            min-height: calc(100vh - 62px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .q-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .q-counter {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.85rem;
+            color: var(--mist);
+            flex-shrink: 0;
+        }
+
+        .q-counter strong {
+            color: var(--ink);
+            font-size: 1rem;
+        }
+
+        .q-type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0.25rem 0.7rem;
+            border-radius: 20px;
+        }
+
+        .badge-vf {
+            background: var(--teal-pale);
+            color: var(--teal);
+        }
+
+        .badge-mc {
+            background: var(--accent-pale);
+            color: var(--accent);
+        }
+
+        .q-section-label {
+            margin-left: auto;
+            font-size: 0.75rem;
+            color: var(--fog);
+            background: var(--paper);
+            padding: 0.25rem 0.65rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .question-card {
+            background: var(--white);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            padding: 2.5rem 2.75rem;
+            box-shadow: var(--shadow-sm);
+            flex: 1;
+            animation: qSlideIn 0.32s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .question-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+
+        .question-card.type-vf::before {
+            background: linear-gradient(90deg, var(--teal), var(--teal-light));
+        }
+
+        .question-card.type-mc::before {
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+        }
+
+        @keyframes qSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        @keyframes qSlideOut {
+            from {
+                opacity: 1;
+                transform: none;
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(-24px);
+            }
+        }
+
+        .question-card.exit {
+            animation: qSlideOut 0.22s ease forwards;
+        }
+
+        .q-num-big {
+            font-family: 'Playfair Display', serif;
+            font-size: 5rem;
+            font-weight: 700;
+            color: rgba(26, 26, 46, 0.05);
+            position: absolute;
+            top: 1rem;
+            right: 2rem;
+            line-height: 1;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .q-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--ink);
+            line-height: 1.45;
+            letter-spacing: -0.01em;
+            margin-bottom: 2rem;
+            max-width: 680px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Options — VF */
+        .options-vf {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .opt-vf {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1.4rem;
+            border: 2px solid var(--border-med);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.18s;
+            background: var(--cream);
+            user-select: none;
+        }
+
+        .opt-vf:hover {
+            border-color: var(--teal);
+            background: var(--teal-pale);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .opt-vf.selected-true {
+            border-color: var(--teal);
+            background: var(--teal-pale);
+            box-shadow: 0 0 0 4px rgba(46, 110, 114, 0.12);
+        }
+
+        .opt-vf.selected-false {
+            border-color: var(--red);
+            background: var(--red-pale);
+            box-shadow: 0 0 0 4px rgba(192, 57, 43, 0.10);
+        }
+
+        .opt-vf-icon {
+            font-size: 2rem;
+        }
+
+        .opt-vf-label {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .opt-vf.selected-true .opt-vf-label {
+            color: var(--teal);
+        }
+
+        .opt-vf.selected-false .opt-vf-label {
+            color: var(--red);
+        }
+
+        /* Options — MC */
+        .options-mc {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .opt-mc {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--border-med);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.18s;
+            background: var(--cream);
+            user-select: none;
+        }
+
+        .opt-mc:hover {
+            border-color: var(--accent);
+            background: var(--accent-pale);
+            transform: translateX(4px);
+        }
+
+        .opt-mc.selected {
+            border-color: var(--accent);
+            background: var(--accent-pale);
+            box-shadow: 0 0 0 4px rgba(196, 132, 58, 0.12);
+        }
+
+        .opt-mc-letter {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: var(--paper);
+            border: 1.5px solid var(--border-med);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--mist);
+            flex-shrink: 0;
+            transition: all 0.18s;
+        }
+
+        .opt-mc.selected .opt-mc-letter {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--white);
+        }
+
+        .opt-mc-text {
+            font-size: 0.92rem;
+            color: var(--slate);
+            line-height: 1.55;
+            padding-top: 0.15rem;
+            font-weight: 400;
+        }
+
+        .opt-mc.selected .opt-mc-text {
+            color: var(--ink);
+            font-weight: 500;
+        }
+
+        /* Nav buttons */
+        .q-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 2.25rem;
+        }
+
+        .btn-nav-q {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.5rem;
+            border-radius: 9px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+        }
+
+        .btn-nav-q:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-prev {
+            background: var(--paper);
+            border: 1.5px solid var(--border-med);
+            color: var(--slate);
+        }
+
+        .btn-prev:hover {
+            border-color: var(--ink);
+            color: var(--ink);
+            background: var(--white);
+        }
+
+        .btn-prev:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-next {
+            background: var(--ink);
+            color: var(--white);
+            box-shadow: 0 3px 14px rgba(26, 26, 46, 0.2);
+        }
+
+        .btn-next:hover {
+            background: var(--ink-light);
+            box-shadow: 0 5px 20px rgba(26, 26, 46, 0.28);
+        }
+
+        .btn-submit {
+            background: var(--accent);
+            color: var(--white);
+            box-shadow: 0 3px 16px rgba(196, 132, 58, 0.3);
+            font-weight: 600;
+        }
+
+        .btn-submit:hover {
+            background: var(--accent-light);
+            box-shadow: 0 5px 22px rgba(196, 132, 58, 0.38);
+        }
+
+        .q-skip-hint {
+            font-size: 0.78rem;
+            color: var(--fog);
+            text-align: center;
+            flex: 1;
+        }
+
+        /* ══════════════════════════════
+     SIDEBAR PANEL
+    ══════════════════════════════ */
+        .sidebar-panel {
+            background: var(--white);
+            border-left: 1px solid var(--border);
+            min-height: calc(100vh - 62px);
+            padding: 1.75rem 1.5rem;
+            position: sticky;
+            top: 62px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.75rem;
+        }
+
+        .panel-section-title {
+            font-size: 0.68rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--fog);
+            margin-bottom: 0.85rem;
+        }
+
+        /* Progress ring */
+        .progress-summary {
+            display: flex;
+            align-items: center;
+            gap: 1.1rem;
+        }
+
+        .ring-wrap {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .ring-svg {
+            transform: rotate(-90deg);
+        }
+
+        .ring-bg {
+            fill: none;
+            stroke: var(--paper);
+            stroke-width: 6;
+        }
+
+        .ring-fill {
+            fill: none;
+            stroke: url(#ringGrad);
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-dasharray: 163;
+            /* 2π×26 */
+            stroke-dashoffset: 163;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .ring-label {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ring-pct {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        .ring-sub {
+            font-size: 0.58rem;
+            color: var(--fog);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .progress-info {
+            flex: 1;
+        }
+
+        .progress-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--mist);
+            margin-bottom: 0.3rem;
+        }
+
+        .progress-info-row strong {
+            color: var(--ink);
+            font-weight: 600;
+        }
+
+        .progress-track {
+            height: 5px;
+            background: var(--paper);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-track-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--teal), var(--accent));
+            border-radius: 3px;
+            transition: width 0.4s;
+        }
+
+        /* Question grid */
+        .q-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.45rem;
+        }
+
+        .q-dot {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1.5px solid var(--border-med);
+            background: var(--cream);
+            color: var(--mist);
+            transition: all 0.15s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .q-dot:hover {
+            border-color: var(--ink);
+            color: var(--ink);
+            background: var(--paper);
+            transform: scale(1.08);
+        }
+
+        .q-dot.answered {
+            background: var(--green-pale);
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        .q-dot.current {
+            background: var(--ink);
+            border-color: var(--ink);
+            color: var(--white);
+            transform: scale(1.1);
+            box-shadow: 0 3px 10px rgba(26, 26, 46, 0.25);
+        }
+
+        .q-dot.current.answered {
+            background: var(--teal);
+            border-color: var(--teal);
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.78rem;
+            color: var(--mist);
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        .leg-current {
+            background: var(--ink);
+        }
+
+        .leg-answered {
+            background: var(--green);
+        }
+
+        .leg-pending {
+            background: var(--paper);
+            border: 1px solid var(--border-med);
+        }
+
+        /* Submit button in sidebar */
+        .btn-submit-sidebar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.85rem;
+            background: var(--accent);
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 4px 16px rgba(196, 132, 58, 0.25);
+            margin-top: auto;
+        }
+
+        .btn-submit-sidebar:hover {
+            background: var(--accent-light);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 22px rgba(196, 132, 58, 0.32);
+        }
+
+        .unanswered-warning {
+            font-size: 0.75rem;
+            color: var(--accent);
+            text-align: center;
+            display: none;
+            margin-top: -0.5rem;
+        }
+
+        .unanswered-warning.visible {
+            display: block;
+        }
+
+        /* ══════════════════════════════
+     MODAL OVERRIDES FOR BOOTSTRAP
+    ══════════════════════════════ */
+        .modal-top {
+            background: var(--ink);
+            padding: 2rem 2rem 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            display: block;
+        }
+
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1.2;
+        }
+
+        .modal-subtitle {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 0.4rem;
+            font-weight: 300;
+        }
+
+        .modal-body {
+            padding: 1.75rem 2rem;
+        }
+
+        .submit-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .submit-stat {
+            background: var(--paper);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .submit-stat-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        .submit-stat-label {
+            font-size: 0.72rem;
+            color: var(--fog);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-top: 0.25rem;
+        }
+
+        .submit-stat.warn .submit-stat-num {
+            color: var(--accent);
+        }
+
+        .modal-note {
+            font-size: 0.82rem;
+            color: var(--mist);
+            background: var(--accent-pale);
+            border-radius: 10px;
+            padding: 0.85rem 1rem;
+            line-height: 1.6;
+            border-left: 3px solid var(--accent);
+        }
+
+        .modal-footer {
+            padding: 1rem 2rem 1.5rem;
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-modal {
+            flex: 1;
+            padding: 0.8rem;
+            border-radius: 9px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: none;
+            transition: all 0.15s;
+        }
+
+        .btn-modal-cancel {
+            background: var(--paper);
+            color: var(--slate);
+        }
+
+        .btn-modal-cancel:hover {
+            background: #e6e3dc;
+            color: var(--ink);
+        }
+
+        .btn-modal-confirm {
+            background: var(--accent);
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .btn-modal-confirm:hover {
+            background: var(--accent-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar-panel {
+                min-height: auto;
+                border-left: none;
+                border-top: 1px solid var(--border);
+                position: static;
+            }
+
+            .topbar {
+                padding: 0 1.5rem;
+            }
+
+            .question-area {
+                padding: 1.5rem 1.5rem 3rem;
+            }
+
+            .options-vf {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .topbar {
+                padding: 0 1rem;
+                gap: 0.75rem;
+            }
+
+            .topbar-eval-name {
+                display: none;
+            }
+
+            .topbar-divider {
+                display: none;
+            }
+
+            .question-area {
+                padding: 1.25rem 1rem 3rem;
+            }
+
+            .q-text {
+                font-size: 1.15rem;
+            }
+
+            .question-card {
+                padding: 1.75rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="topbar" id="topbar">
+        <div class="topbar-logo">Mini<span>LMS</span></div>
+        <div class="topbar-divider"></div>
+        <div class="topbar-eval-name">{{ assessment.title }}</div>
+        <div class="timer-wrap">
+            <span class="timer-icon">⏱</span>
+            <span class="timer-val" id="timer">30:00</span>
+        </div>
+        <div class="topbar-student">
+            <div class="student-avatar-sm">{{ request.user.username|slice:":2"|upper }}</div>
+            <span class="student-name-sm">{{ request.user.get_full_name|default:request.user.username }}</span>
+        </div>
+    </header>
+
+    <div class="global-progress">
+        <div class="global-progress-fill" id="global-fill" style="width:0%"></div>
+    </div>
+
+    <form method="POST" id="assessment-django-form" style="flex: 1; display: flex; flex-direction: column;">
+        {% csrf_token %}
+
+        <div style="display: none;">
+            {{ form }}
+        </div>
+
+        <div id="django-questions-data" style="display: none;">
+            {% for question in assessment.questions.all %}
+            <span class="js-q-item" data-id="{{ question.id }}" data-type="{{ question.question_type }}"
+                data-section="Sección {% if question.section %}{{ question.section }}{% else %}1{% endif %}"
+                data-text="{{ question.text|escapejs }}" data-fieldname="question_{{ question.id }}">
+
+                {% if question.question_type == 'mc' %}
+                {% for choice in question.choices.all %}
+                <span class="js-o-item" data-dbid="{{ choice.id }}" data-text="{{ choice.text|escapejs }}"
+                    data-counter="{{ forloop.counter0 }}"></span>
+                {% endfor %}
+                {% endif %}
+            </span>
+            {% endfor %}
+        </div>
+
+        <div id="exam-view" style="flex:1; display:flex; flex-direction:column">
+            <div class="layout">
+
+                <main class="question-area">
+                    <div class="q-header">
+                        <div class="q-counter">Pregunta <strong id="q-num-display">1</strong> de <strong
+                                id="q-total-display">10</strong></div>
+                        <span class="q-type-badge badge-vf" id="q-type-badge">☑ Verdadero / Falso</span>
+                        <div class="q-section-label" id="q-section-label">Sección 1</div>
+                    </div>
+
+                    <div class="question-card type-vf" id="question-card">
+                        <div class="q-num-big" id="q-num-big">01</div>
+                        <div class="q-text" id="q-text">Cargando pregunta...</div>
+                        <div id="options-container"></div>
+                    </div>
+
+                    <div class="q-nav">
+                        <button type="button" class="btn-nav-q btn-prev" id="btn-prev" disabled onclick="navigate(-1)">
+                            ← Anterior
+                        </button>
+                        <span class="q-skip-hint" id="skip-hint">Puedes responder después</span>
+                        <button type="button" class="btn-nav-q btn-next" id="btn-next" onclick="navigate(1)">
+                            Siguiente →
+                        </button>
+                    </div>
+                </main>
+
+                <aside class="sidebar-panel">
+                    <div>
+                        <div class="panel-section-title">Tu progreso</div>
+                        <div class="progress-summary">
+                            <div class="ring-wrap">
+                                <svg class="ring-svg" width="60" height="60">
+                                    <defs>
+                                        <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="var(--teal)" />
+                                            <stop offset="100%" stop-color="var(--accent)" />
+                                        </linearGradient>
+                                    </defs>
+                                    <circle class="ring-bg" cx="30" cy="30" r="26" />
+                                    <circle class="ring-fill" id="ring-fill" cx="30" cy="30" r="26" />
+                                </svg>
+                                <div class="ring-label">
+                                    <span class="ring-pct" id="ring-pct">0%</span>
+                                    <span class="ring-sub">Prog</span>
+                                </div>
+                            </div>
+                            <div class="progress-info">
+                                <div class="progress-info-row">
+                                    <span>Respondidas:</span>
+                                    <strong id="info-answered">0</strong>
+                                </div>
+                                <div class="progress-info-row">
+                                    <span>Pendientes:</span>
+                                    <strong id="info-pending">0</strong>
+                                </div>
+                                <div class="progress-track">
+                                    <div class="progress-track-fill" id="progress-track-fill" style="width:0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="panel-section-title">Navegación</div>
+                        <div class="q-grid" id="q-grid"></div>
+                    </div>
+
+                    <div>
+                        <div class="legend">
+                            <div class="legend-item">
+                                <div class="legend-dot leg-current"></div>
+                                <span>Actual</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot leg-answered"></div>
+                                <span>Respondida</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot leg-pending"></div>
+                                <span>Pendiente</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="unanswered-warning" id="sidebar-warning">
+                        ⚠️ Tienes preguntas pendientes sin responder.
+                    </div>
+
+                    <button type="button" class="btn-submit-sidebar" onclick="openSubmitModal()">
+                        Enviar Evaluación ✓
+                    </button>
+                </aside>
+
+            </div>
+        </div>
+    </form>
+
+    <div class="modal fade" id="submitModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 460px;">
+            <div class="modal-content border-0"
+                style="border-radius: 20px; overflow: hidden; background: var(--white); box-shadow: var(--shadow-lg);">
+                <div class="modal-top">
+                    <span class="modal-icon">📤</span>
+                    <div class="modal-title">Entregar evaluación</div>
+                    <div class="modal-subtitle">¿Estás seguro de que deseas entregar ahora?</div>
+                </div>
+                <div class="modal-body">
+                    <div class="submit-stats">
+                        <div class="submit-stat">
+                            <div class="submit-stat-num" id="modal-answered">0</div>
+                            <div class="submit-stat-label">Respondidas</div>
+                        </div>
+                        <div class="submit-stat warn">
+                            <div class="submit-stat-num" id="modal-pending">0</div>
+                            <div class="submit-stat-label">Sin responder</div>
+                        </div>
+                    </div>
+                    <div class="modal-note" id="modal-note">
+                        Una vez que entregues, no podrás modificar tus respuestas. Las respuestas se guardarán
+                        permanentemente en el
+                        servidor.
+                    </div>
+                </div>
+                <div class="modal-footer border-0 bg-light">
+                    <button type="button" class="btn-modal btn-modal-cancel" onclick="closeSubmitModal()">Seguir
+                        respondiendo</button>
+                    <button type="button" class="btn-modal btn-modal-confirm" onclick="submitEval()">Confirmar y
+                        Entregar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+
+    <script>
+        const QUESTIONS = [];
+        document.querySelectorAll('#django-questions-data .js-q-item').forEach(qEl => {
+            const qData = {
+                id: parseInt(qEl.dataset.id),
+                type: qEl.dataset.type,
+                section: qEl.dataset.section,
+                text: qEl.dataset.text,
+                fieldName: qEl.dataset.fieldname,
+                options: []
+            };
+
+            qEl.querySelectorAll('.js-o-item').forEach(oEl => {
+                const idx = parseInt(oEl.dataset.counter);
+                qData.options.push({
+                    label: String(idx + 1),
+                    labelLetter: ['A', 'B', 'C', 'D', 'E', 'F'][idx] || 'A',
+                    text: oEl.dataset.text,
+                    dbId: oEl.dataset.dbid
+                });
+            });
+
+            QUESTIONS.push(qData);
+        });
+
+        let currentIdx = 0;
+        let answers = new Array(QUESTIONS.length).fill(null);
+        let bsModalInstance = null;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            QUESTIONS.forEach((q, idx) => {
+                if (q.type === 'vf') {
+                    const radioTrue = document.querySelector(`input[name="${q.fieldName}"][value="True"]`);
+                    const radioFalse = document.querySelector(`input[name="${q.fieldName}"][value="False"]`);
+                    if (radioTrue && radioTrue.checked) answers[idx] = true;
+                    if (radioFalse && radioFalse.checked) answers[idx] = false;
+                } else {
+                    q.options.forEach(opt => {
+                        const radioOpt = document.querySelector(`input[name="${q.fieldName}"][value="${opt.dbId}"]`);
+                        if (radioOpt && radioOpt.checked) answers[idx] = opt.labelLetter;
+                    });
+                }
+            });
+
+            if (QUESTIONS.length > 0) {
+                renderQuestion(currentIdx);
+                renderGrid();
+                renderProgress();
+            } else {
+                document.getElementById('q-text').textContent = "No hay preguntas disponibles en esta evaluación.";
+            }
+        });
+
+        let totalSeconds = 30 * 60;
+        const timerEl = document.getElementById('timer');
+
+        function updateTimer() {
+            const m = Math.floor(totalSeconds / 60);
+            const s = totalSeconds % 60;
+            timerEl.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+
+            timerEl.className = 'timer-val' + (totalSeconds <= 60 ? ' danger' : totalSeconds <= 5 * 60 ? ' warning' : '');
+
+            if (totalSeconds <= 0) {
+                clearInterval(timerInterval);
+                autoSubmit();
+            }
+            totalSeconds--;
+        }
+        const timerInterval = setInterval(updateTimer, 1000);
+
+        function renderQuestion(idx) {
+            const q = QUESTIONS[idx];
+            const card = document.getElementById('question-card');
+
+            card.classList.add('exit');
+            setTimeout(() => {
+                card.classList.remove('exit');
+                card.className = `question-card type-${q.type}`;
+
+                const badge = document.getElementById('q-type-badge');
+                if (q.type === 'vf') {
+                    badge.textContent = '☑ Verdadero / Falso';
+                    badge.className = 'q-type-badge badge-vf';
+                } else {
+                    badge.textContent = '✏ Selección múltiple';
+                    badge.className = 'q-type-badge badge-mc';
+                }
+
+                document.getElementById('q-num-display').textContent = idx + 1;
+                document.getElementById('q-total-display').textContent = QUESTIONS.length;
+                document.getElementById('q-num-big').textContent = String(idx + 1).padStart(2, '0');
+                document.getElementById('q-text').textContent = q.text;
+                document.getElementById('q-section-label').textContent = q.section;
+
+                const container = document.getElementById('options-container');
+                container.innerHTML = '';
+
+                if (q.type === 'vf') {
+                    container.innerHTML = `
+                        <div class="options-vf">
+                        <div class="opt-vf ${answers[idx] === true ? 'selected-true' : ''}" onclick="answerVF(true)" id="opt-true">
+                            <span class="opt-vf-icon">✅</span>
+                            <span class="opt-vf-label">Verdadero</span>
+                        </div>
+                        <div class="opt-vf ${answers[idx] === false ? 'selected-false' : ''}" onclick="answerVF(false)" id="opt-false">
+                            <span class="opt-vf-icon">❌</span>
+                            <span class="opt-vf-label">Falso</span>
+                        </div>
+                        </div>`;
+                } else {
+                    const opts = q.options.map(o => `
+                        <div class="opt-mc ${answers[idx] === o.labelLetter ? 'selected' : ''}" onclick="answerMC('${o.labelLetter}')">
+                        <div class="opt-mc-letter">${o.labelLetter}</div>
+                        <div class="opt-mc-text">${o.text}</div>
+                        </div>`).join('');
+
+                    container.innerHTML = `<div class="options-mc">${opts}</div>`;
+                }
+
+                document.getElementById('btn-prev').disabled = idx === 0;
+                const btnNext = document.getElementById('btn-next');
+                const isLast = idx === QUESTIONS.length - 1;
+
+                if (isLast) {
+                    btnNext.textContent = '📤 Entregar evaluación';
+                    btnNext.className = 'btn-nav-q btn-submit';
+                    btnNext.onclick = openSubmitModal;
+                } else {
+                    btnNext.innerHTML = 'Siguiente →';
+                    btnNext.className = 'btn-nav-q btn-next';
+                    btnNext.onclick = () => navigate(1);
+                }
+
+                document.getElementById('skip-hint').textContent = answers[idx] !== null ? '✓ Respondida' : 'Puedes responder después';
+            }, 200);
+        }
+
+        function answerVF(val) {
+            answers[currentIdx] = val;
+            document.querySelectorAll('.opt-vf').forEach(el => el.className = 'opt-vf');
+            if (val === true) document.getElementById('opt-true').className = 'opt-vf selected-true';
+            if (val === false) document.getElementById('opt-false').className = 'opt-vf selected-false';
+
+            document.getElementById('skip-hint').textContent = '✓ Respondida';
+
+            const q = QUESTIONS[currentIdx];
+            const valStr = val === true ? 'True' : 'False';
+            const djangoInput = document.querySelector(`input[name="${q.fieldName}"][value="${valStr}"]`);
+            if (djangoInput) djangoInput.checked = true;
+
+            renderGrid();
+            renderProgress();
+        }
+
+        function answerMC(labelLetter) {
+            answers[currentIdx] = labelLetter;
+            const q = QUESTIONS[currentIdx];
+            const selectedOpt = q.options.find(o => o.labelLetter === labelLetter);
+
+            document.querySelectorAll('.opt-mc').forEach(el => {
+                const ltr = el.querySelector('.opt-mc-letter').textContent;
+                el.className = 'opt-mc' + (ltr === labelLetter ? ' selected' : '');
+            });
+            document.getElementById('skip-hint').textContent = '✓ Respondida';
+
+            if (selectedOpt) {
+                const djangoInput = document.querySelector(`input[name="${q.fieldName}"][value="${selectedOpt.dbId}"]`);
+                if (djangoInput) djangoInput.checked = true;
+            }
+
+            renderGrid();
+            renderProgress();
+        }
+
+        function navigate(dir) {
+            const next = currentIdx + dir;
+            if (next < 0 || next >= QUESTIONS.length) return;
+            currentIdx = next;
+            renderQuestion(currentIdx);
+        }
+
+        function goTo(idx) {
+            currentIdx = idx;
+            renderQuestion(idx);
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('q-grid');
+            grid.innerHTML = QUESTIONS.map((q, i) => {
+                const isCurrent = i === currentIdx;
+                const isAnswered = answers[i] !== null;
+                const cls = 'q-dot' + (isCurrent ? ' current' : '') + (isAnswered ? ' answered' : '');
+                return `<div class="${cls}" onclick="goTo(${i})" title="Pregunta ${i + 1}">${i + 1}</div>`;
+            }).join('');
+        }
+
+        function renderProgress() {
+            const answered = answers.filter(a => a !== null).length;
+            const total = QUESTIONS.length;
+            const pct = total > 0 ? Math.round(answered / total * 100) : 0;
+
+            document.getElementById('ring-pct').textContent = pct + '%';
+            document.getElementById('info-answered').textContent = answered;
+            document.getElementById('info-pending').textContent = total - answered;
+            document.getElementById('progress-track-fill').style.width = pct + '%';
+            document.getElementById('global-fill').style.width = pct + '%';
+
+            const offset = 163 * (1 - pct / 100);
+            document.getElementById('ring-fill').style.strokeDashoffset = offset;
+
+            const warn = document.getElementById('sidebar-warning');
+            if (total - answered > 0) {
+                warn.classList.add('visible');
+            } else {
+                warn.classList.remove('visible');
+            }
+        }
+
+        function openSubmitModal() {
+            const answered = answers.filter(a => a !== null).length;
+            const total = QUESTIONS.length;
+
+            document.getElementById('modal-answered').textContent = answered;
+            document.getElementById('modal-pending').textContent = total - answered;
+
+            const note = document.getElementById('modal-note');
+            if (total - answered > 0) {
+                note.className = "modal-note text-danger bg-light border-start border-danger p-3 rounded";
+                note.innerHTML = `⚠️ <strong>Tienes ${total - answered} pregunta(s) sin responder.</strong> Si entregas ahora, estas se calificarán con 0 puntos.`;
+            } else {
+                note.className = "modal-note";
+                note.innerHTML = `Una vez que entregues, no podrás modificar tus respuestas. Las respuestas se guardarán permanentemente en el servidor.`;
+            }
+
+            if (!bsModalInstance) {
+                bsModalInstance = new bootstrap.Modal(document.getElementById('submitModal'));
+            }
+            bsModalInstance.show();
+        }
+
+        function closeSubmitModal() {
+            if (bsModalInstance) bsModalInstance.hide();
+        }
+
+        function submitEval() {
+            closeSubmitModal();
+            clearInterval(timerInterval);
+            document.getElementById('assessment-django-form').submit();
+        }
+
+        function autoSubmit() {
+            clearInterval(timerInterval);
+            closeSubmitModal();
+            alert('¡El tiempo ha terminado! Tu evaluación se enviará automáticamente con las respuestas guardadas hasta el momento.');
+            document.getElementById('assessment-django-form').submit();
+        }
+    </script>
+</body>
+
+</html>

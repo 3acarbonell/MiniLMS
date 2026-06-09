@@ -448,7 +448,9 @@
             <div class="sidebar-section-label">Navegación</div>
             <a href="{% url 'core:dashboard_student' %}" class="sidebar-link"><span class="link-icon">🏠</span> Panel
                 General</a>
-            <a href="" class="sidebar-link"><span class="link-icon">✏️</span> Evaluaciones</a>
+            <a href="{% url 'core:course_student_grades' course.id %}" class="sidebar-link"><span
+                    class="link-icon">✏️</span>
+                Evaluaciones</a>
         </div>
 
         <div class="sidebar-bottom">
@@ -513,7 +515,8 @@
 
                                         <div class="group-header-label">Evaluaciones</div>
                                         {% for exam in section.assessments.all %}
-                                        <a href="" class="custom-list-item">
+                                        <a href="{% url 'core:course_assessment_student' exam.pk %}"
+                                            class="custom-list-item">
                                             <span><strong>Evaluación:</strong> {{ exam.title }}</span>
                                         </a>
                                         {% empty %}

@@ -20,5 +20,8 @@ urlpatterns = [
     path('course/student/<int:pk>', views.course_student, name='course_student'),
     path('course/teacher/delete/<str:item_type>/<int:item_id>/',
          views.course_teacher_delete, name='course_teacher_delete'),
-    # path('exam/teacher/creation', views.exam_teacher_creation, name='exam_teacher_creation')
+    path('course/assessment/<int:assessment_id>/',
+         views.take_assessment_view, name='course_assessment_student'),
+    path('course/student/<int:course_id>/grades',
+         views.course_student_grades, name='course_student_grades'),
 ]

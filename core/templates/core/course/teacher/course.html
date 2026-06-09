@@ -586,11 +586,6 @@
             font-size: 0.855rem;
         }
 
-        .student-email {
-            font-size: 0.72rem;
-            color: var(--fog);
-        }
-
         .progress-cell .progress {
             height: 5px;
             background-color: var(--paper);
@@ -1010,16 +1005,6 @@
             </a>
         </div>
 
-        <div class="sidebar-section">
-            <div class="sidebar-section-label">Herramientas</div>
-            <a class="sidebar-link">
-                <span class="link-icon">✏️</span> Evaluaciones
-            </a>
-            <a class="sidebar-link">
-                <span class="link-icon">📁</span> Contenido
-            </a>
-        </div>
-
         <div class="sidebar-bottom">
             <div>
                 <a href="{% url 'core:account' %}" class="d-flex p-2 user">
@@ -1042,17 +1027,12 @@
             <div class="d-flex align-items-center gap-3">
                 <button class="btn p-0 d-lg-none fs-4 border-0" onclick="toggleMobileSidebar()">☰</button>
                 <div class="topbar-breadcrumb d-flex align-items-center gap-2 mb-0">
-                    <a href="">Mis Cursos</a>
+                    <a href="{% url 'core:dashboard_teacher' %}">Mis Cursos</a>
                     <span class="opacity-50">›</span>
                     <span class="current">{{ course.title }}</span>
                 </div>
             </div>
-            <div class="d-flex gap-2">
-                <button class="btn btn-custom btn-custom-primary btn-sm px-3 py-2" data-bs-toggle="modal"
-                    data-bs-target="#modalSection">
-                    + Nueva sección
-                </button>
-            </div>
+
         </div>
 
         <div class="container-fluid p-4 flex-grow-1">
@@ -1240,14 +1220,92 @@
                 </div>
 
                 <div class="tab-pane fade" id="panel-evaluaciones" role="tabpanel" aria-labelledby="evaluaciones-tab">
-                    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
-                        <div class="col">
-                            <div class="eval-card type-mc">
-                                <span class="eval-type-tag tag-mc">Inactivo</span>
-                                <h3 class="eval-title mt-2">Pestaña reservada</h3>
-                                <p class="eval-meta text-muted mb-0">Implementación en fases posteriores.</p>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="h5 mb-0 fw-bold" style="color: var(--slate);">Calificaciones y Seguimiento</h2>
+                    </div>
+
+                    <div class="d-flex flex-column gap-3">
+                        {% for assessment in assessments %}
+                        <div class="card border-0 shadow-sm"
+                            style="border-radius: 14px; overflow: hidden; background: var(--white);">
+
+                            <div class="p-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2"
+                                style="background: var(--paper); border-bottom: 1px solid var(--border); cursor: pointer;"
+                                data-bs-toggle="collapse" data-bs-target="#collapse-eval-{{ assessment.id }}"
+                                aria-expanded="false" aria-controls="collapse-eval-{{ assessment.id }}">
+
+                                <div>
+                                    <h3 class="h6 mb-0 fw-bold text-dark"
+                                        style="font-family: serif; font-size: 1.05rem;">
+                                        📝 {{ assessment.title }}
+                                    </h3>
+                                </div>
+
+                                <div class="d-flex align-items-center gap-3">
+                                    <span class="badge rounded-pill bg-secondary px-2 py-1"
+                                        style="font-size: 0.72rem; font-weight: 500;">
+                                        {{ assessment.grades.count }} respuestas
+                                    </span>
+                                    <span class="fs-6 text-muted">▼</span>
+                                </div>
                             </div>
+
+                            <div class="collapse" id="collapse-eval-{{ assessment.id }}">
+                                <div class="p-3 bg-white">
+                                    {% if assessment.description %}
+                                    <p class="text-muted small mb-3 border-start ps-2"
+                                        style="border-left-color: var(--accent) !important;">
+                                        {{ assessment.description }}
+                                    </p>
+                                    {% endif %}
+
+                                    <div class="table-responsive">
+                                        <table class="table table-custom mb-0 align-middle">
+                                            <thead>
+                                                <tr>
+                                                    <th>Estudiante</th>
+                                                    <th class="text-center">Estado</th>
+                                                    <th class="text-end">Calificación Obtenida</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for grade in assessment.grades.all %}
+                                                <tr>
+                                                    <td>
+                                                        <div class="student-fullname">
+                                                            {{ grade.student.get_full_name }}
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <span class="status-pill pill-active">Completado</span>
+                                                    </td>
+                                                    <td class="text-end fw-bold fs-6" style="color: var(--teal);">
+                                                        {{ grade.score }} <span class="text-muted fw-normal"
+                                                            style="font-size: 0.75rem;">/
+                                                            {{ assessment.max_score}}</span>
+                                                    </td>
+                                                </tr>
+                                                {% empty %}
+                                                <tr>
+                                                    <td colspan="3" class="text-center text-muted py-4 small">
+                                                        🤷‍♂️ Ningún estudiante ha completado o recibido calificación en
+                                                        este examen todavía.
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
+                        {% empty %}
+                        <div class="text-center py-5 bg-white rounded-3 border p-4">
+                            <span class="fs-2 mb-2 d-block">📝</span>
+                            <p class="text-muted mb-0">No se han registrado evaluaciones en este curso todavía.</p>
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
 
@@ -1469,6 +1527,11 @@
                     <textarea id="question-text" class="form-control"></textarea>
                 </div>
 
+                <div class="mb-3">
+                    <label class="form-label">Puntaje de la pregunta</label>
+                    <input type="number" id="question-points" class="form-control" value="1" min="1" step="1">
+                </div>
+
                 <div id="vf-area">
                     <label class="form-label">
                         Respuesta correcta
@@ -1616,8 +1679,8 @@
 
         function saveQuestion() {
             const type = document.getElementById('question-type').value;
-
             const text = document.getElementById('question-text').value;
+            const points = parseFloat(document.getElementById('question-points').value) || 1;
 
             if (!text.trim()) {
                 alert('Debes escribir la pregunta');
@@ -1626,7 +1689,8 @@
 
             let question = {
                 type: type,
-                text: text
+                text: text,
+                points: points
             };
 
             if (type === 'vf') {
@@ -1668,14 +1732,12 @@
                 div.className = 'border rounded p-3';
 
                 div.innerHTML = `
-                    <div class="fw-bold">
-                        ${index + 1}. ${q.text}
+                    <div class="fw-bold d-flex justify-content-between align-items-center">
+                        <span>${index + 1}. ${q.text}</span>
+                        <span class="badge bg-secondary px-2 py-1 small">${q.points} pts</span>
                     </div>
-
-                    <div class="text-muted small">
-                        ${q.type === 'vf'
-                        ? 'Verdadero/Falso'
-                        : 'Selección múltiple'}
+                    <div class="text-muted small mt-1">
+                        ${q.type === 'vf' ? 'Verdadero/Falso' : 'Selección múltiple'}
                     </div>
                 `;
 
@@ -1689,6 +1751,7 @@
         function resetQuestionModal() {
             document.getElementById('question-text').value = '';
             document.getElementById('question-type').value = 'vf';
+            document.getElementById('question-points').value = '1';
             document.getElementById('vf-answer').value = 'true';
             document.getElementById('mc-options-container').innerHTML = '';
 

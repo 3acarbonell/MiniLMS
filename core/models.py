@@ -2,6 +2,7 @@ from datetime import date, time
 
 from django.db import models
 from django.conf import settings
+from django.db.models import Sum
 from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
@@ -63,12 +64,21 @@ class Assessment(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
     max_score = models.DecimalField(
-        max_digits=5, decimal_places=2, default=7.0)
+        max_digits=3, decimal_places=0, default=100.0)
     start_date = models.DateField(default=date(2026, 1, 1))
     start_time = models.TimeField(default=time(12, 0))
     duration = models.IntegerField(null=False, default=5)
     students = models.ManyToManyField(
         User, related_name='assigned_exam', blank=True)
+
+    def __str__(self):
+        return self.title
+
+    def update_max_score(self):
+        total_points = self.questions.aggregate(
+            total=Sum('points'))['total'] or 0
+        self.max_score = total_points
+        self.save(update_fields=['max_score'])
 
 
 class Grade(models.Model):
@@ -76,7 +86,7 @@ class Grade(models.Model):
         Assessment, on_delete=models.CASCADE, related_name='grades')
     student = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    score = models.DecimalField(max_digits=5, decimal_places=2)
+    score = models.DecimalField(max_digits=3, decimal_places=0)
     feedback = models.TextField(blank=True, null=True)
 
     class Meta:
@@ -91,6 +101,8 @@ class Question(models.Model):
     text = models.TextField()
     vf_answer = models.BooleanField(null=True, blank=True)
 
+    points = models.DecimalField(max_digits=3, decimal_places=0, default=1.0)
+
     def __str__(self):
         return f"{self.get_question_type_display()}: {self.text}"
 
@@ -104,3 +116,17 @@ class Choice(models.Model):
 
     def __str__(self):
         return f"{self.letter}) {self.text}"
+
+
+class StudentAnswer(models.Model):
+    student = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    question = models.ForeignKey(
+        Question, on_delete=models.CASCADE, related_name='student_answers')
+
+    selected_choice = models.ForeignKey(
+        Choice, on_delete=models.SET_NULL, null=True, blank=True)
+    vf_answer = models.BooleanField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ('student', 'question')
