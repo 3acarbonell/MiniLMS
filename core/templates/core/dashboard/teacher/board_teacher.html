@@ -368,7 +368,7 @@
                     </div>
                     <div class="px-2">
                         <div class="teacher-name">{{ user.first_name }} {{ user.last_name }}</div>
-                        <div class="teacher-role">Profesor</div>
+                        <div class="teacher-role">{{ user.get_role_display }}</div>
                     </div>
                 </a>
                 <form action="{% url 'core:logout' %}" method="POST" class="d-inline logout">

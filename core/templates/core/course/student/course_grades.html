@@ -324,7 +324,7 @@
                     </div>
                     <div class="px-2 overflow-hidden">
                         <div class="student-name text-truncate">{{ user.first_name }} {{ user.last_name }}</div>
-                        <div class="student-role">Estudiante</div>
+                        <div class="student-role">{{ user.get_role_display }}</div>
                     </div>
                 </a>
 
