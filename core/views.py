@@ -90,15 +90,6 @@ def dashboard_student(request):
 
 
 @login_required
-def account(request):
-    user = request.user
-
-    return render(request, "core/registration/account.html", {
-        'user': user
-    })
-
-
-@login_required
 def course_student(request, pk):
     if request.user.role != 'student':
         return redirect('core:dashboard_student')
