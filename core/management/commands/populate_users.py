@@ -26,7 +26,7 @@ class Command(BaseCommand):
             ('alumno_ignacio', 'Ignacio',
              'Guerrero', 'contacto@email.cl', 'student', '1234@wera'),
             ('alumno_benjamin', 'Benjamin',
-             'Barros', 'contacto@email.cl', 'student', '1234@wera'),
+             'Barrios', 'contacto@email.cl', 'student', '1234@wera'),
         ]
 
         for username, first_name, last_name, email, role, password in users:

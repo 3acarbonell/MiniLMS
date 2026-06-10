@@ -34,7 +34,7 @@
 
         html,
         body {
-            height: 100%;
+            min-height: 100vh;
             font-family: sans-serif;
             background: var(--ink);
             color: var(--ink);
@@ -228,8 +228,8 @@
 </head>
 
 <body>
-    <div class="container-fluid p-0 h-100">
-        <div class="row g-0 h-100">
+    <div class="container-fluid p-0 min-vh-100">
+        <div class="row g-0 min-vh-100">
             <div
                 class="col-lg-6 brand-panel d-none d-lg-flex flex-column justify-content-between p-5 text-white position-relative">
                 <div class="grid-lines"></div>
@@ -262,7 +262,7 @@
                 </div>
                 <div class="position-relative z-2">
                     <div class="testimonial">
-                        <div class="small text-white-50 lh-base fst-italic text-center mb-3">"EduPlat transformó
+                        <div class="small text-white-50 lh-base fst-italic text-center mb-3">"MiniLMS transformó
                             completamente la
                             manera en que llevo mis clases. Ahora paso más tiempo enseñando y menos gestionando
                             papeles."</div>
@@ -279,7 +279,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-6 form-panel d-flex p-4 position-relative h-100">
+            <div class="col-lg-6 form-panel d-flex position-relative">
                 <div class="form-wrap m-auto">
                     <div class="form-card">
 
@@ -319,7 +319,7 @@
                         </div>
 
                         {% if request.resolver_match.url_name == 'login' %}
-                        <form method="POST" class="p-4 p-sm-4">
+                        <form method="POST" class="p-sm-4">
                             {% csrf_token %}
                             <div class="text-center mb-4">
                                 <div class="form-title">Bienvenido de nuevo</div>
@@ -334,7 +334,7 @@
                         </form>
 
                         {% elif request.resolver_match.url_name == 'register' %}
-                        <div class="p-4 p-sm-4">
+                        <div class="p-sm-4">
                             <div class="text-center mb-4">
                                 <div class="form-title">Crear una cuenta</div>
                                 <div class="form-subtitle mt-1">Completa tus datos para darte de alta</div>
