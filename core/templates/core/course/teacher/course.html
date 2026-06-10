@@ -985,6 +985,10 @@
         #modalAssessment .col-xl-4 .card {
             width: 100%;
         }
+
+        .logout {
+            padding-top: 10px;
+        }
     </style>
 </head>
 
@@ -1006,8 +1010,8 @@
         </div>
 
         <div class="sidebar-bottom">
-            <div>
-                <a href="{% url 'core:account' %}" class="d-flex p-2 user">
+            <div class="d-flex justify-content-center flex-wrap">
+                <a href="" class="d-flex p-2 user">
                     <div class="d-flex align-items-center gap-2">
                         <img src="https://ui-avatars.com/api/?name={{ user.first_name }}+{{ user.last_name }}&background=1d293d&color=fff&size=28"
                             alt="User Avatar" class="teacher-avatar rounded-circle border border-secondary-subtle"
@@ -1018,6 +1022,10 @@
                         <div class="teacher-role">Profesor</div>
                     </div>
                 </a>
+                <form action="{% url 'core:logout' %}" method="POST" class="d-inline logout">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3">Cerrar sesión</button>
+                </form>
             </div>
         </div>
     </aside>

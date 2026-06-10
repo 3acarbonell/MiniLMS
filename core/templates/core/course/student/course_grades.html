@@ -291,6 +291,10 @@
             border-color: var(--ink);
             color: var(--white);
         }
+
+        .logout {
+            padding-top: 10px;
+        }
     </style>
 </head>
 
@@ -311,17 +315,24 @@
         </div>
 
         <div class="sidebar-bottom">
-            <a href="{% url 'core:account' %}" class="d-flex p-2 user align-items-center">
-                <div class="d-flex align-items-center">
-                    <img src="https://ui-avatars.com/api/?name={{ user.first_name }}+{{ user.last_name }}&background=1d293d&color=fff&size=32"
-                        alt="User Avatar" class="rounded-circle border border-secondary-subtle" width="32px"
-                        height="32px">
-                </div>
-                <div class="px-2 overflow-hidden">
-                    <div class="student-name text-truncate">{{ user.first_name }} {{ user.last_name }}</div>
-                    <div class="student-role">Estudiante</div>
-                </div>
-            </a>
+            <div class="d-flex justify-content-center flex-wrap">
+                <a href="" class="d-flex p-2 user align-items-center">
+                    <div class="d-flex align-items-center">
+                        <img src="https://ui-avatars.com/api/?name={{ user.first_name }}+{{ user.last_name }}&background=1d293d&color=fff&size=32"
+                            alt="User Avatar" class="rounded-circle border border-secondary-subtle" width="32px"
+                            height="32px">
+                    </div>
+                    <div class="px-2 overflow-hidden">
+                        <div class="student-name text-truncate">{{ user.first_name }} {{ user.last_name }}</div>
+                        <div class="student-role">Estudiante</div>
+                    </div>
+                </a>
+
+                <form action="{% url 'core:logout' %}" method="POST" class="d-inline logout">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3">Cerrar sesión</button>
+                </form>
+            </div>
         </div>
     </aside>
 
