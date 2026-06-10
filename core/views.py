@@ -6,8 +6,7 @@ from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.views.generic.edit import CreateView
-from django.db.models import Sum, Avg
+from django.db.models import Sum
 
 from .models import Course, Grade, Section, ContentBlock, Assessment, Question, Choice, StudentAnswer
 from .forms import AssessmentForm, CourseForm, RegisterForm, SectionForm, ContentBlockForm, TakeAssessmentForm
@@ -58,8 +57,23 @@ def dashboard_teacher(request):
 
     courses = Course.objects.filter(teacher=request.user)
 
+    if request.method == 'POST':
+        form = CourseForm(request.POST)
+
+        if form.is_valid():
+            course = form.save(commit=False)
+            course.teacher = request.user
+            course.save()
+
+            form.save_m2m()
+
+            return redirect('core:dashboard_teacher')
+    else:
+        form = CourseForm()
+
     return render(request, "core/dashboard/teacher/board_teacher.html", {
-        'courses': courses
+        'courses': courses,
+        'form': form
     })
 
 
@@ -73,17 +87,6 @@ def dashboard_student(request):
     return render(request, "core/dashboard/student/board_student.html", {
         'courses': courses
     })
-
-
-class CourseCreateView(CreateView):
-    model = Course
-    form_class = CourseForm
-    template_name = 'core/dashboard/teacher/course_form.html'
-    success_url = reverse_lazy('core:dashboard_teacher')
-
-    def form_valid(self, form):
-        form.instance.teacher = self.request.user
-        return super().form_valid(form)
 
 
 @login_required

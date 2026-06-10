@@ -1061,9 +1061,10 @@
                         aria-selected="true">Contenido</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="estudiantes-tab" data-bs-toggle="tab"
-                        data-bs-target="#panel-estudiantes" type="button" role="tab" aria-controls="panel-estudiantes"
-                        aria-selected="false">Estudiantes</button>
+                    <button class="nav-link" id="students-tab" data-bs-toggle="tab" data-bs-target="#students"
+                        type="button" role="tab" aria-controls="students" aria-selected="false">
+                        Estudiantes
+                    </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="evaluaciones-tab" data-bs-toggle="tab"
@@ -1203,24 +1204,79 @@
                     </div>
                 </div>
 
-                <div class="tab-pane fade" id="panel-estudiantes" role="tabpanel" aria-labelledby="estudiantes-tab">
-                    <div class="d-flex flex-column gap-3">
-                        <div class="table-custom table-responsive shadow-sm">
-                            <table class="table table-hover mb-0 align-middle">
-                                <thead>
+                <div class="tab-pane fade" id="students" role="tabpanel" aria-labelledby="students-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+                        <div>
+                            <h2 class="h4 mb-1" style="color: var(--ink);">Lista de Alumnos Inscritos</h2>
+                            <p class="text-muted small mb-0">
+                                Total de alumnos asignados a este curso:
+                                <strong>
+                                    {{ course.students.count }}
+                                </strong>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm border-0 bg-white rounded-3 overflow-hidden">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead style="background-color: var(--paper);">
                                     <tr>
-                                        <th>Estudiante</th>
-                                        <th>Progreso</th>
-                                        <th class="text-end">Acciones</th>
+                                        <th scope="col" class="ps-4 py-3 text-muted fw-semibold small"
+                                            style="width: 50%;">ESTUDIANTE</th>
+                                        <th scope="col" class="py-3 text-muted fw-semibold small text-center"
+                                            style="width: 50%;">ESTADO</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {% for student in course.students.all %}
                                     <tr>
-                                        <td><span class="text-muted small">Módulo de visualización inactivo en
-                                                edición</span></td>
-                                        <td>-</td>
-                                        <td class="text-end">-</td>
+                                        <td class="ps-4 py-3">
+                                            <div class="d-flex align-items-center">
+                                                <div class="d-flex align-items-center justify-content-center rounded-circle text-white fw-bold me-3 shadow-sm"
+                                                    style="width: 42px; height: 42px; background-color: var(--teal); font-size: 0.95rem; min-width: 42px;">
+                                                    {{ student.first_name|slice:":1"|upper }}
+                                                    {% if student.last_name %}
+                                                    {{ student.last_name|slice:":1"|upper }}
+                                                    {% else %}
+                                                    {{ student.username|slice:":1"|upper }}
+                                                    {% endif %}
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0 fw-semibold" style="color: var(--ink);">
+                                                        {% if student.first_name or student.last_name %}
+                                                        {{ student.first_name }} {{ student.last_name }}
+                                                        {% else %}
+                                                        {{ student.username }}
+                                                        {% endif %}
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="py-3 text-center">
+                                            <span class="badge rounded-pill px-3 py-2 small fw-medium"
+                                                style="background-color: var(--teal-pale); color: var(--teal);">
+                                                Activo
+                                            </span>
+                                        </td>
                                     </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="3" class="text-center py-5">
+                                            <div class="py-4">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48"
+                                                    fill="currentColor" class="bi bi-people mb-3" viewBox="0 0 16 16"
+                                                    style="color: var(--fog);">
+                                                    <path
+                                                        d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1zm-7.978-1L7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002-.014.002zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0M6.936 9.28a6 6 0 0 0-1.23-.247A7 7 0 0 0 5 9c-4 0-5 3-5 4q0 1 1 1h4.216A2.24 2.24 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816M4.92 10A5.5 5.5 0 0 0 4 13H1c0-.26.164-1.03.76-1.724C2.307 10.625 3.269 10 5 10c.242 0 .47.012.68.036a6 6 0 0 0-.76 1M6 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0m1-1a3 3 0 1 0-6 0 3 3 0 0 0 6 0" />
+                                                </svg>
+                                                <p class="mb-0 fw-medium text-muted">
+                                                    Aún no hay estudiantes matriculados en este curso.
+                                                </p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>

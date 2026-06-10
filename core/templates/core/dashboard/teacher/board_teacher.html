@@ -312,6 +312,32 @@
         .logout {
             padding-top: 10px;
         }
+
+        .dynamic-student-list ul {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 0;
+        }
+
+        .dynamic-student-list li {
+            margin-bottom: 0.6rem;
+        }
+
+        .dynamic-student-list label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--slate);
+            font-size: 0.9rem;
+        }
+
+        .dynamic-student-list input[type="checkbox"] {
+            accent-color: var(--teal);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -375,6 +401,12 @@
             <main class="px-2">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2 class="section-title mb-0">Mis Cursos</h2>
+                    <button type="button"
+                        class="btn text-white rounded-pill px-4 shadow-sm border-0 d-flex align-items-center gap-2"
+                        style="background-color: var(--teal); font-size: 0.9rem; font-weight: 500;"
+                        data-bs-toggle="modal" data-bs-target="#createCourseModal">
+                        <span>➕</span> Crear Curso
+                    </button>
                 </div>
 
                 <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
@@ -408,6 +440,77 @@
                     </div>
                     {% endfor %}
                 </div>
+
+                <div class="modal fade" id="createCourseModal" tabindex="-1" aria-labelledby="createCourseModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content border-0 shadow-lg"
+                            style="background-color: var(--cream); border-radius: 16px;">
+
+                            <div class="modal-header border-bottom-0 pb-0" style="padding: 1.5rem 1.5rem 0;">
+                                <h5 class="modal-title fw-bold" id="createCourseModalLabel"
+                                    style="font-family: serif; font-size: 1.5rem; color: var(--ink);">Crear Nuevo Curso
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Cerrar"></button>
+                            </div>
+
+                            <form method="POST" action="">
+                                {% csrf_token %}
+                                <div class="modal-body" style="padding: 1.5rem;">
+
+                                    <div class="mb-3">
+                                        <label for="{{ form.title.id_for_label }}"
+                                            class="form-label fw-semibold small text-muted text-uppercase"
+                                            style="letter-spacing: 0.05em;">
+                                            {{ form.title.label }}
+                                        </label>
+                                        {{ form.title }}
+                                        {% if form.title.errors %}
+                                        <div class="text-danger small mt-1">{{ form.title.errors }}</div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="{{ form.description.id_for_label }}"
+                                            class="form-label fw-semibold small text-muted text-uppercase"
+                                            style="letter-spacing: 0.05em;">
+                                            {{ form.description.label }}
+                                        </label>
+                                        {{ form.description }}
+                                        {% if form.description.errors %}
+                                        <div class="text-danger small mt-1">{{ form.description.errors }}</div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold small text-muted text-uppercase"
+                                            style="letter-spacing: 0.05em;">
+                                            {{ form.students.label }}
+                                        </label>
+                                        <div class="p-3 bg-white border rounded-3 dynamic-student-list shadow-sm"
+                                            style="max-height: 220px; overflow-y: auto;">
+                                            {{ form.students }}
+                                        </div>
+                                        {% if form.students.errors %}
+                                        <div class="text-danger small mt-1">{{ form.students.errors }}</div>
+                                        {% endif %}
+                                    </div>
+
+                                </div>
+
+                                <div class="modal-footer border-top-0 pt-0" style="padding: 0 1.5rem 1.5rem;">
+                                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4"
+                                        data-bs-dismiss="modal" style="font-size: 0.9rem;">Cancelar</button>
+                                    <button type="submit" class="btn text-white rounded-pill px-4 shadow-sm border-0"
+                                        style="background-color: var(--teal); font-size: 0.9rem;">Guardar Curso</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
             </main>
 
         </div>
@@ -422,6 +525,18 @@
             document.getElementById('sidebar').classList.toggle('open');
         }
     </script>
+
+    {% if form.errors %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const createCourseModalElement = document.getElementById('createCourseModal');
+            if (createCourseModalElement) {
+                const myModal = new bootstrap.Modal(createCourseModalElement);
+                myModal.show();
+            }
+        });
+    </script>
+    {% endif %}
 </body>
 
 </html>

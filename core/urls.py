@@ -12,8 +12,6 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('account/', views.account, name='account'),
     path('teacher/dashboard/', views.dashboard_teacher, name='dashboard_teacher'),
-    path('course/form', login_required(views.CourseCreateView.as_view()),
-         name='course_form'),
     path('student/dashboard/', views.dashboard_student, name='dashboard_student'),
     path('course/teacher/<int:course_id>',
          views.course_teacher, name='course_teacher'),
