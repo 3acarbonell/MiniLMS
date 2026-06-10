@@ -56,9 +56,6 @@
             flex-direction: column;
         }
 
-        /* ══════════════════════════════
-     TOP BAR
-    ══════════════════════════════ */
         .topbar {
             position: sticky;
             top: 0;
@@ -73,7 +70,7 @@
         }
 
         .topbar-logo {
-            font-family: 'Playfair Display', serif;
+            font-family: serif;
             font-size: 1.2rem;
             font-weight: 700;
             color: var(--white);
@@ -122,7 +119,7 @@
         }
 
         .timer-val {
-            font-family: 'Playfair Display', serif;
+            font-family: serif;
             font-size: 1rem;
             font-weight: 700;
             color: var(--white);
@@ -177,9 +174,6 @@
             font-weight: 400;
         }
 
-        /* ══════════════════════════════
-     PROGRESS BAR
-    ══════════════════════════════ */
         .global-progress {
             height: 4px;
             background: rgba(26, 26, 46, 0.08);
@@ -193,9 +187,6 @@
             border-radius: 0 2px 2px 0;
         }
 
-        /* ══════════════════════════════
-     LAYOUT
-    ══════════════════════════════ */
         .layout {
             display: grid;
             grid-template-columns: 1fr 300px;
@@ -204,9 +195,6 @@
             align-items: start;
         }
 
-        /* ══════════════════════════════
-     QUESTION AREA
-    ══════════════════════════════ */
         .question-area {
             padding: 2.5rem 3rem 4rem;
             min-height: calc(100vh - 62px);
@@ -222,7 +210,7 @@
         }
 
         .q-counter {
-            font-family: 'Playfair Display', serif;
+            font-family: serif;
             font-size: 0.85rem;
             color: var(--mist);
             flex-shrink: 0;
@@ -323,7 +311,7 @@
         }
 
         .q-num-big {
-            font-family: 'Playfair Display', serif;
+            font-family: serif;
             font-size: 5rem;
             font-weight: 700;
             color: rgba(26, 26, 46, 0.05);
@@ -336,7 +324,7 @@
         }
 
         .q-text {
-            font-family: 'Playfair Display', serif;
+            font-family: serif;
             font-size: 1.4rem;
             font-weight: 600;
             color: var(--ink);
@@ -348,7 +336,6 @@
             z-index: 1;
         }
 
-        /* Options — VF */
         .options-vf {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -393,7 +380,7 @@
         }
 
         .opt-vf-label {
-            font-family: 'Playfair Display', serif;
+            font-family: serif;
             font-size: 1.1rem;
             font-weight: 700;
         }
@@ -406,7 +393,6 @@
             color: var(--red);
         }
 
-        /* Options — MC */
         .options-mc {
             display: flex;
             flex-direction: column;
@@ -447,7 +433,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Playfair Display', serif;
+            font-family: serif;
             font-size: 0.9rem;
             font-weight: 700;
             color: var(--mist);
@@ -474,7 +460,6 @@
             font-weight: 500;
         }
 
-        /* Nav buttons */
         .q-nav {
             display: flex;
             align-items: center;
@@ -488,7 +473,7 @@
             gap: 0.5rem;
             padding: 0.7rem 1.5rem;
             border-radius: 9px;
-            font-family: 'DM Sans', sans-serif;
+            font-family: sans-serif;
             font-size: 0.875rem;
             font-weight: 500;
             cursor: pointer;
@@ -548,9 +533,6 @@
             flex: 1;
         }
 
-        /* ══════════════════════════════
-     SIDEBAR PANEL
-    ══════════════════════════════ */
         .sidebar-panel {
             background: var(--white);
             border-left: 1px solid var(--border);
@@ -572,7 +554,6 @@
             margin-bottom: 0.85rem;
         }
 
-        /* Progress ring */
         .progress-summary {
             display: flex;
             align-items: center;
@@ -600,7 +581,6 @@
             stroke-width: 6;
             stroke-linecap: round;
             stroke-dasharray: 163;
-            /* 2π×26 */
             stroke-dashoffset: 163;
             transition: stroke-dashoffset 0.5s ease;
         }
@@ -615,7 +595,7 @@
         }
 
         .ring-pct {
-            font-family: 'Playfair Display', serif;
+            font-family: serif;
             font-size: 0.9rem;
             font-weight: 700;
             color: var(--ink);
@@ -662,7 +642,6 @@
             transition: width 0.4s;
         }
 
-        /* Question grid */
         .q-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -682,7 +661,7 @@
             background: var(--cream);
             color: var(--mist);
             transition: all 0.15s;
-            font-family: 'DM Sans', sans-serif;
+            font-family: sans-serif;
         }
 
         .q-dot:hover {
@@ -711,7 +690,6 @@
             border-color: var(--teal);
         }
 
-        /* Legend */
         .legend {
             display: flex;
             flex-direction: column;
@@ -746,7 +724,6 @@
             border: 1px solid var(--border-med);
         }
 
-        /* Submit button in sidebar */
         .btn-submit-sidebar {
             display: flex;
             align-items: center;
@@ -758,7 +735,7 @@
             color: var(--white);
             border: none;
             border-radius: 10px;
-            font-family: 'DM Sans', sans-serif;
+            font-family: sans-serif;
             font-size: 0.875rem;
             font-weight: 600;
             cursor: pointer;
@@ -785,9 +762,6 @@
             display: block;
         }
 
-        /* ══════════════════════════════
-     MODAL OVERRIDES FOR BOOTSTRAP
-    ══════════════════════════════ */
         .modal-top {
             background: var(--ink);
             padding: 2rem 2rem 1.5rem;
@@ -802,7 +776,7 @@
         }
 
         .modal-title {
-            font-family: 'Playfair Display', serif;
+            font-family: serif;
             font-size: 1.4rem;
             font-weight: 700;
             color: var(--white);
@@ -835,7 +809,7 @@
         }
 
         .submit-stat-num {
-            font-family: 'Playfair Display', serif;
+            font-family: serif;
             font-size: 1.8rem;
             font-weight: 700;
             color: var(--ink);
@@ -900,7 +874,6 @@
             background: var(--accent-light);
         }
 
-        /* Responsive */
         @media (max-width: 992px) {
             .layout {
                 grid-template-columns: 1fr;
@@ -985,11 +958,11 @@
             {% for question in assessment.questions.all %}
             <span class="js-q-item" data-id="{{ question.id }}" data-type="{{ question.question_type }}"
                 data-section="Sección {% if question.section %}{{ question.section }}{% else %}1{% endif %}"
-                data-text="{{ question.text|escapejs }}" data-fieldname="question_{{ question.id }}">
+                data-text="{{ question.text }}" data-fieldname="question_{{ question.id }}">
 
                 {% if question.question_type == 'mc' %}
                 {% for choice in question.choices.all %}
-                <span class="js-o-item" data-dbid="{{ choice.id }}" data-text="{{ choice.text|escapejs }}"
+                <span class="js-o-item" data-dbid="{{ choice.id }}" data-text="{{ choice.text }}"
                     data-counter="{{ forloop.counter0 }}"></span>
                 {% endfor %}
                 {% endif %}
