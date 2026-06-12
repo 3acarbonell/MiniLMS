@@ -1040,8 +1040,22 @@
                     <span class="current">{{ course.title }}</span>
                 </div>
             </div>
-
         </div>
+
+        {% if messages %}
+        {% for message in messages %}
+        {% if message.tags == 'error' %}
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm border-start border-danger border-4 rounded-3 mb-3"
+            role="alert">
+            <div class="d-flex align-items-center gap-2">
+                <span class="fs-5">❌</span>
+                <div class="fw-medium text-danger-emphasis">{{ message }}</div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
 
         <div class="container-fluid p-4 flex-grow-1">
 
@@ -1182,7 +1196,7 @@
                                         <div class="d-flex flex-column gap-2 mt-3">
                                             <button class="add-item-btn" data-section-id="{{ section.id }}"
                                                 data-bs-toggle="modal" data-bs-target="#modalBlock">
-                                                + Agregar contenido de lectura
+                                                + Agregar Archivos
                                             </button>
                                             <button class="add-item-btn" data-section-id="{{ section.id }}"
                                                 data-bs-toggle="modal" data-bs-target="#modalAssessment">
@@ -1679,7 +1693,7 @@
                 document.getElementById('hidden_section_id_block').value = sectionId;
 
                 if (button && button.hasAttribute('data-id')) {
-                    document.getElementById('blockModalTitle').innerText = "Editar Bloque de Texto";
+                    document.getElementById('blockModalTitle').innerText = "Añade Contenido";
                     idInput.value = button.getAttribute('data-id');
                     modalBlock.querySelector('input[name="title"]').value = button.getAttribute('data-title');
                     modalBlock.querySelector('textarea[name="content"]').value = button.getAttribute('data-content');

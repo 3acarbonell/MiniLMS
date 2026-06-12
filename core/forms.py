@@ -1,6 +1,9 @@
+from pathlib import Path
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
+from django.conf import settings
 
 
 from crispy_forms.helper import FormHelper
@@ -90,11 +93,27 @@ class ContentBlockForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self.fields['title'].label = "Título"
+        self.fields['content'].label = "Contenido"
+
+        dir_path = Path(settings.BASE_DIR / 'core' /
+                        'static' / 'core' / 'courseFiles')
+
+        options_files = [('', 'Seleciona un archivo')]
+
+        if dir_path.exists():
+            options_files += [(f.name, f.name)
+                              for f in dir_path.iterdir() if f.is_file()]
+
+        self.fields['content'].widget = forms.Select(
+            choices=options_files, attrs={'class': 'form-select'})
+
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
             Div(
-                HTML('<h5 class="mb-3">Añadir Bloque de Texto</h5>'),
+                HTML('<h5 class="mb-3">Añadir un Archivo</h5>'),
                 Field('title', css_class='mb-3',
                       placeholder="Título del bloque"),
                 Field('content', css_class='mb-3'),

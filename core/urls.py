@@ -21,4 +21,6 @@ urlpatterns = [
          views.take_assessment_view, name='course_assessment_student'),
     path('course/student/<int:course_id>/grades',
          views.course_student_grades, name='course_student_grades'),
+    path('course/student/download/<int:block_id>',
+         views.download, name='download'),
 ]

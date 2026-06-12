@@ -199,31 +199,20 @@ COURSES_DATA = [
         "description": "Que los alumnos conozcan, apliquen y generen habilidades necesarias, en diversos tipos de Redes de Datos existentes. Gestionando y administrando diversos entornos.",
         "sections": [
             {
-                "title": "Semana 1",
+                "title": "Unidad 1",
                 "order": "1",
-                "content_title": "Unidad 1: La IT y Tecnologías emergentes",
-                "content_text": "...",
+                "content_title": "PDF",
+                "content_text": "01 Unidad 1 - La IT y Tecnologías Emergentes.pdf",
             }, {
-                "title": "Semana 2",
+                "title": "Unidad 2",
                 "order": "2",
-                "content_title": "Impulsores Tecnológicos",
-                "content_text": "...",
+                "content_title": "PDF",
+                "content_text": "02 Unidad 2 - Atributos No funcionales.pdf",
             }, {
-                "title": "Semana 3",
+                "title": "Unidad 3",
                 "order": "3",
-                "content_title": "Impulsores Tecnológicos",
-                "content_text": "...",
-            }, {
-                "title": "Semana 4",
-                "order": "4",
-                "content_title": "Plataformas de Software",
-                "content_text": "...",
-            },
-            {
-                "title": "Semana 5",
-                "order": "5",
-                "content_title": "MVC",
-                "content_text": "...",
+                "content_title": "PDF",
+                "content_text": "03 Unidad 3 - Elementos Principales de la IT.pdf",
             }
         ]
     }

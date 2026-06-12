@@ -1,12 +1,14 @@
 import json
+import os
 
+from django.http import FileResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
+from django.conf import settings
 
 from .models import Course, Grade, Section, ContentBlock, Assessment, Question, Choice, StudentAnswer
 from .forms import AssessmentForm, CourseForm, RegisterForm, SectionForm, ContentBlockForm, TakeAssessmentForm
@@ -317,3 +319,21 @@ def course_student_grades(request, course_id):
         'course': course,
         'grades_report': grades_report
     })
+
+
+@login_required
+def download(request, block_id):
+    block = get_object_or_404(ContentBlock, id=block_id)
+
+    file_name = block.content
+
+    file_path = os.path.join(settings.BASE_DIR, 'core',
+                             'static', 'core', 'courseFiles', file_name)
+
+    if os.path.exists(file_path):
+        reponse = FileResponse(open(file_path, 'rb'), as_attachment=True)
+        return reponse
+    else:
+        messages.error(request, "Archivo no encontrado")
+
+        return redirect(request.META.get('HTTP_REFERER', '/'))
