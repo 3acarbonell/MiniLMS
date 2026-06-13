@@ -83,19 +83,16 @@ class SectionForm(forms.ModelForm):
         )
 
 
-class ContentBlockForm(forms.ModelForm):
+class ContentFileForm(forms.ModelForm):
     class Meta:
         model = ContentBlock
-        fields = ['title', 'content']
-        widgets = {
-            'content': forms.Textarea(attrs={'rows': 4})
-        }
+        fields = ['title', 'file']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.fields['title'].label = "Título"
-        self.fields['content'].label = "Contenido"
+        self.fields['file'].label = "Selecionar Archivo"
 
         dir_path = Path(settings.BASE_DIR / 'core' /
                         'static' / 'core' / 'courseFiles')
@@ -106,7 +103,7 @@ class ContentBlockForm(forms.ModelForm):
             options_files += [(f.name, f.name)
                               for f in dir_path.iterdir() if f.is_file()]
 
-        self.fields['content'].widget = forms.Select(
+        self.fields['file'].widget = forms.Select(
             choices=options_files, attrs={'class': 'form-select'})
 
         self.helper = FormHelper()
@@ -115,8 +112,35 @@ class ContentBlockForm(forms.ModelForm):
             Div(
                 HTML('<h5 class="mb-3">Añadir un Archivo</h5>'),
                 Field('title', css_class='mb-3',
-                      placeholder="Título del bloque"),
-                Field('content', css_class='mb-3'),
+                      placeholder="Ej: Guía de estudio"),
+                Field('file', css_class='mb-3'),
+                css_class="border p-3 mb-4 bg-light rounded"
+            )
+        )
+
+
+class ContentPageForm(forms.ModelForm):
+    class Meta:
+        model = ContentBlock
+        fields = ['title', 'content_page']
+        widgets = {
+            'content_page': forms.Textarea(attrs={'id': 'markdown-editor', 'rows': 5})
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['title'].label = "Título de la Pagína"
+        self.fields['content_page'].label = "Cuerpo de la Pagína"
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Div(
+                HTML('<h5 class="mb-3">Crear Página</h5>'),
+                Field('title', css_class='mb-3',
+                      placeholder="Ej: Conceptos de Redes"),
+                Field('content_page', css_class='mb-3'),
                 css_class="border p-3 mb-4 bg-light rounded"
             )
         )

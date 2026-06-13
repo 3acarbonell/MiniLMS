@@ -11,7 +11,7 @@ from django.db.models import Sum
 from django.conf import settings
 
 from .models import Course, Grade, Section, ContentBlock, Assessment, Question, Choice, StudentAnswer
-from .forms import AssessmentForm, CourseForm, RegisterForm, SectionForm, ContentBlockForm, TakeAssessmentForm
+from .forms import AssessmentForm, ContentFileForm, ContentPageForm, CourseForm, RegisterForm, SectionForm, TakeAssessmentForm
 
 
 # Create your views here.
@@ -126,18 +126,28 @@ def course_teacher(request, course_id):
                 return redirect('core:course_teacher', course_id=course.id)
 
         elif 'save_block' in request.POST:
+            block_type = request.POST.get('block_type')
             block_id = request.POST.get('block_id')
             section_id = request.POST.get('section_id')
 
-            instance = None
-            if block_id and block_id.strip():
-                instance = get_object_or_404(ContentBlock, id=block_id)
+            instance = get_object_or_404(
+                ContentBlock, id=block_id) if block_id else None
 
-            form = ContentBlockForm(request.POST, instance=instance)
+            if block_type == '':
+                form = ContentFileForm(request.POST, instance=instance)
+                actual_type = 'file'
+            else:
+                form = ContentPageForm(request.POST, instance=instance)
+                actual_type = 'page'
+
             if form.is_valid():
                 block = form.save(commit=False)
                 block.section = get_object_or_404(Section, id=section_id)
+                block.block_type = actual_type
                 block.save()
+
+                messages.success(
+                    request, "Contenido actualizado correctamente.")
                 return redirect('core:course_teacher', course_id=course.id)
 
         elif 'save_asmt' in request.POST:
@@ -151,7 +161,6 @@ def course_teacher(request, course_id):
 
             form = AssessmentForm(
                 request.POST, instance=instance, course=course)
-
             if form.is_valid():
                 asmt = form.save(commit=False)
                 asmt.section = get_object_or_404(Section, id=section_id)
@@ -194,7 +203,8 @@ def course_teacher(request, course_id):
         'course': course,
         'assessments': assessments,
         'section_form': SectionForm(),
-        'block_form': ContentBlockForm(),
+        'file_form': ContentFileForm(),
+        'page_form':    ContentPageForm(),
         'assessment_form': AssessmentForm(
             course=course
         ),
@@ -337,3 +347,10 @@ def download(request, block_id):
         messages.error(request, "Archivo no encontrado")
 
         return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+@login_required
+def course_student_markdown_page(request, page_id):
+    page = get_object_or_404(ContentBlock, id=page_id)
+
+    return render(request, 'core/course/student/markdown.html', {'page': page})

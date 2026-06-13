@@ -526,13 +526,24 @@
 
                                 <div class="collapse" id="collapse-{{ section.id }}">
                                     <div class="d-flex flex-column">
-                                        <div class="group-header-label">Contenidos de lectura</div>
+                                        <div class="group-header-label">Contenido</div>
                                         {% for content in section.contents.all %}
-                                        <a href="{% url 'core:download' content.id %}" class="custom-list-item">
+
+                                        {% if content.block_type == 'page' %}
+                                        <a href="{% url 'core:course_student_markdown_page' content.id %}"
+                                            class="custom-list-item">
                                             <span>{{ content.title }}</span>
                                         </a>
+                                        {% else %}
+                                        <a href="{% url 'core:download' content.id %}" class="custom-list-item">
+                                            <span>{{ content.title }}</span>
+                                            <span class="badge bg-light text-secondary border small ms-auto"
+                                                style="font-size: 0.7rem;">Descarga</span>
+                                        </a>
+                                        {% endif %}
+
                                         {% empty %}
-                                        <div class="text-muted small p-3 bg-white">Sin materiales de lectura asignados.
+                                        <div class="text-muted small p-3 bg-white">Sin materiale asignado.
                                         </div>
                                         {% endfor %}
 

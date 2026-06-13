@@ -23,4 +23,6 @@ urlpatterns = [
          views.course_student_grades, name='course_student_grades'),
     path('course/student/download/<int:block_id>',
          views.download, name='download'),
+    path('course/student/page/<int:page_id>/',
+         views.course_student_markdown_page, name='course_student_markdown_page'),
 ]

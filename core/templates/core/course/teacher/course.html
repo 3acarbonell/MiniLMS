@@ -10,6 +10,10 @@
     <title>{{ course.title }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+
     <style>
         :root {
             --ink: #1a1a2e;
@@ -1194,9 +1198,13 @@
                                         </p>
                                         {% endfor %}
                                         <div class="d-flex flex-column gap-2 mt-3">
-                                            <button class="add-item-btn" data-section-id="{{ section.id }}"
-                                                data-bs-toggle="modal" data-bs-target="#modalBlock">
-                                                + Agregar Archivos
+                                            <button class="add-item-btn" data-bs-toggle="modal"
+                                                data-bs-target="#modalFileBlock" data-section-id="{{ section.id }}">
+                                                + Agregar archivo
+                                            </button>
+                                            <button class="add-item-btn" data-bs-toggle="modal"
+                                                data-bs-target="#modalPageBlock" data-section-id="{{ section.id }}">
+                                                + Añadir página
                                             </button>
                                             <button class="add-item-btn" data-section-id="{{ section.id }}"
                                                 data-bs-toggle="modal" data-bs-target="#modalAssessment">
@@ -1417,19 +1425,45 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalBlock" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modalFileBlock" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content p-2" style="border-radius: 18px;">
                 <form method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="block_id" id="edit_block_id">
                     <input type="hidden" name="section_id" id="hidden_section_id_block">
+                    <input type="hidden" name="block_type" value="file">
                     <div class="modal-header border-bottom-0 pb-0">
                         <h5 class="modal-title fs-5" id="blockModalTitle">Material de Estudio</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        {% crispy block_form %}
+                        {% crispy file_form %}
+                    </div>
+                    <div class="modal-footer border-top-0 pt-0">
+                        <button type="button" class="btn btn-sm btn-light px-3"
+                            data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" name="save_block" class="btn btn-sm btn-custom-teal px-3">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalPageBlock" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content p-2" style="border-radius: 18px;">
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="block_id" id="edit_page_block_id">
+                    <input type="hidden" name="section_id" id="hidden_section_id_page">
+                    <input type="hidden" name="block_type" value="page">
+                    <div class="modal-header border-bottom-0 pb-0">
+                        <h5 class="modal-title fs-5" id="blockModalTitle">Material de Estudio</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        {% crispy page_form %}
                     </div>
                     <div class="modal-footer border-top-0 pt-0">
                         <button type="button" class="btn btn-sm btn-light px-3"
@@ -1684,25 +1718,72 @@
                 }
             });
 
-            const modalBlock = document.getElementById('modalBlock');
-            modalBlock.addEventListener('show.bs.modal', function (event) {
+            const modalFileBlock = document.getElementById('modalFileBlock');
+            modalFileBlock.addEventListener('show.bs.modal', function (event) {
                 const button = event.relatedTarget;
-                const idInput = document.getElementById('edit_block_id');
-
+                const idInput = document.getElementById('edit_file_block_id');
                 const sectionId = button.getAttribute('data-section-id') || button.getAttribute('data-section');
-                document.getElementById('hidden_section_id_block').value = sectionId;
+                document.getElementById('hidden_section_id_file').value = sectionId;
 
                 if (button && button.hasAttribute('data-id')) {
-                    document.getElementById('blockModalTitle').innerText = "Añade Contenido";
+                    document.getElementById('fileModalTitle').innerText = "Editar Archivo";
                     idInput.value = button.getAttribute('data-id');
-                    modalBlock.querySelector('input[name="title"]').value = button.getAttribute('data-title');
-                    modalBlock.querySelector('textarea[name="content"]').value = button.getAttribute('data-content');
+                    modalFileBlock.querySelector('input[name="title"]').value = button.getAttribute('data-title');
+                    modalFileBlock.querySelector('select[name="file"]').value = button.getAttribute('data-file');
                 } else {
                     idInput.value = "";
-                    modalBlock.querySelector('form').reset();
-                    document.getElementById('hidden_section_id_block').value = sectionId;
-                    document.getElementById('blockModalTitle').innerText = "Material de Estudio";
+                    modalFileBlock.querySelector('form').reset();
+                    document.getElementById('hidden_section_id_file').value = sectionId;
+                    document.getElementById('fileModalTitle').innerText = "Material de Estudio";
                 }
+            });
+
+            let easyMDEInstance = null;
+            const modalPageBlock = document.getElementById('modalPageBlock');
+
+            modalPageBlock.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const idInput = document.getElementById('edit_page_block_id');
+                const sectionId = button.getAttribute('data-section-id') || button.getAttribute('data-section');
+
+                document.getElementById('hidden_section_id_page').value = sectionId;
+
+                setTimeout(() => {
+                    if (!easyMDEInstance) {
+                        easyMDEInstance = new EasyMDE({
+                            element: modalPageBlock.querySelector('textarea'),
+                            spellChecker: false,
+                            autosave: { enabled: false },
+                            maxHeight: "250px",
+                            placeholder: "Escribe tu contenido en formato Markdown aquí...",
+                            toolbar: [
+                                "bold", "italic", "strikethrough", "|",
+                                "heading-1", "heading-2", "heading-3", "|",
+                                "code", "quote", "horizontal-rule", "|",
+                                "unordered-list", "ordered-list", "|",
+                                "link", "image", "|",
+                                "preview", "side-by-side", "fullscreen", "|",
+                                "guide"
+                            ]
+                        });
+                    }
+
+                    if (button && button.hasAttribute('data-id')) {
+                        document.getElementById('pageModalTitle').innerText = "Editar Contenido Markdown";
+                        idInput.value = button.getAttribute('data-id');
+
+                        const titleInput = modalPageBlock.querySelector('input[name="title"]');
+                        if (titleInput) titleInput.value = button.getAttribute('data-title');
+
+                        const contenidoPrevio = button.getAttribute('data-content-page') || '';
+                        easyMDEInstance.value(contenidoPrevio);
+                    } else {
+                        idInput.value = "";
+                        modalPageBlock.querySelector('form').reset();
+                        document.getElementById('hidden_section_id_page').value = sectionId;
+                        easyMDEInstance.value('');
+                    }
+                }, 200);
             });
 
             const modalAssessment = document.getElementById('modalAssessment');

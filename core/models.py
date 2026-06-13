@@ -1,9 +1,12 @@
+import markdown
+
 from datetime import date, time
 
 from django.db import models
 from django.conf import settings
 from django.db.models import Sum
 from django.contrib.auth.models import AbstractUser
+from django.utils.safestring import mark_safe
 
 # Create your models here.
 
@@ -52,10 +55,30 @@ class Section(models.Model):
 
 
 class ContentBlock(models.Model):
+    CONTENT_TYPES = [('file', 'Archivo Descargable'),
+                     ('page', 'Página de Contenido')]
+
     section = models.ForeignKey(
         Section, on_delete=models.CASCADE, related_name='contents')
     title = models.CharField(max_length=200)
-    content = models.TextField()
+
+    file = models.TextField(blank=True, null=True)
+    content_page = models.TextField(blank=True, null=True)
+
+    block_type = models.CharField(
+        max_length=10, choices=CONTENT_TYPES, default='file')
+
+    def __str__(self):
+        return f"{self.title} ({self.get_block_type_display()})"
+
+    @property
+    def content_page_html(self):
+        if self.content_page:
+            html = markdown.markdown(self.content_page, extensions=['extra'])
+
+            return mark_safe(html)
+
+        return ""
 
 
 class Assessment(models.Model):

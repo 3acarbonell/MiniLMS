@@ -26,7 +26,6 @@ hyperlink==21.0.0
 idna==3.15
 Incremental==24.11.0
 Markdown==3.10.2
-martor==1.8.1
 msgpack==1.1.2
 packaging==26.2
 psycopg2-binary==2.9.12
