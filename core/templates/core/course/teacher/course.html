@@ -1130,22 +1130,28 @@
                                         <div class="item-row d-flex align-items-center gap-3">
                                             <div class="flex-grow-1 text-truncate">
                                                 <div class="item-name text-truncate">
-                                                    📄 {{ block.title }}
+                                                    📄 {{ block.title }} (Tipo: {{ block.block_type }})
                                                 </div>
                                             </div>
                                             <div class="item-actions d-flex gap-1">
+                                                {% if block.block_type == 'page' %}
                                                 <button class="icon-btn edit-btn" data-bs-toggle="modal"
-                                                    data-bs-target="{% if block.block_type == 'page' %}#modalPageBlock{% else %}#modalFileBlock{% endif %}"
-                                                    data-id="{{ block.id }}" data-section="{{ section.id }}"
-                                                    data-title="{{ block.title }}"
+                                                    data-bs-target="#modalPageBlock" data-id="{{ block.id }}"
+                                                    data-section="{{ section.id }}" data-title="{{ block.title }}"
                                                     data-file="{{ block.file|default:'' }}">
                                                     ✏️
                                                 </button>
 
-                                                {% if block.block_type == 'page' %}
                                                 <div id="raw-markdown-{{ block.id }}" style="display: none;">
                                                     {{ block.content_page }}
                                                 </div>
+                                                {% else %}
+                                                <button class="icon-btn edit-btn" data-bs-toggle="modal"
+                                                    data-bs-target="#modalFileBlock" data-id="{{ block.id }}"
+                                                    data-section="{{ section.id }}" data-title="{{ block.title }}"
+                                                    data-file="{{ block.file|default:'' }}">
+                                                    ✏️
+                                                </button>
                                                 {% endif %}
 
                                                 <form action="{% url 'core:course_teacher_delete' 'block' block.id %}"
@@ -1432,7 +1438,7 @@
             <div class="modal-content p-2" style="border-radius: 18px;">
                 <form method="POST">
                     {% csrf_token %}
-                    <input type="hidden" name="block_id" id="edit_block_id">
+                    <input type="hidden" name="block_id" id="edit_file_block_id">
                     <input type="hidden" name="section_id" id="hidden_section_id_block">
                     <input type="hidden" name="block_type" value="file">
                     <div class="modal-header border-bottom-0 pb-0">
@@ -1725,18 +1731,22 @@
                 const button = event.relatedTarget;
                 const idInput = document.getElementById('edit_file_block_id');
                 const sectionId = button.getAttribute('data-section-id') || button.getAttribute('data-section');
-                document.getElementById('hidden_section_id_file').value = sectionId;
+
+                document.getElementById('hidden_section_id_block').value = sectionId;
 
                 if (button && button.hasAttribute('data-id')) {
                     document.getElementById('fileModalTitle').innerText = "Editar Archivo";
-                    idInput.value = button.getAttribute('data-id');
+
+                    if (idInput.value) {
+                        idInput.value = button.getAttribute('data-id');
+                    }
+
                     modalFileBlock.querySelector('input[name="title"]').value = button.getAttribute('data-title');
-                    modalFileBlock.querySelector('select[name="file"]').value = button.getAttribute('data-file');
                 } else {
-                    idInput.value = "";
+                    if (idInput) idInput.value = "";
                     modalFileBlock.querySelector('form').reset();
                     document.getElementById('hidden_section_id_file').value = sectionId;
-                    document.getElementById('fileModalTitle').innerText = "Material de Estudio";
+                    document.getElementById('fileModalTitle').innerText = "Material de Estudio (Archivo)";
                 }
             });
 
