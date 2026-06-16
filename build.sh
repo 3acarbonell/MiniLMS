@@ -8,4 +8,3 @@ python manage.py migrate
 
 # Population
 python manage.py populate_users
-python manage.py populate_courses

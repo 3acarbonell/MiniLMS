@@ -7,25 +7,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         users = [
-            ('profe_oscar', 'Oscar',
+            ('demo_profesor', 'Oscar',
              'González', 'contacto@email.cl', 'teacher', '1234@wera'),
-            ('profe_roberto', 'Roberto',
-             'Muños', 'contacto@email.cl', 'teacher', '1234@wera'),
-            ('alumno_maximiliano', 'Maximiliano',
-             'Rojas', 'contacto@email.cl', 'student', '1234@wera'),
-            ('alumno_martin', 'Martin',
-             'Díaz', 'contacto@email.cl', 'student', '1234@wera'),
-            ('alumno_juan', 'Juan',
-             'Pérez', 'contacto@email.cl', 'student', '1234@wera'),
-            ('alumno_carlos', 'Carlos',
-             'Donoso', 'contacto@email.cl', 'student', '1234@wera'),
-            ('alumno_jaime', 'Jaime',
-             'Jara', 'contacto@email.cl', 'student', '1234@wera'),
-            ('alumno_franco', 'Franco',
-             'Farias', 'contacto@email.cl', 'student', '1234@wera'),
-            ('alumno_ignacio', 'Ignacio',
-             'Guerrero', 'contacto@email.cl', 'student', '1234@wera'),
-            ('alumno_benjamin', 'Benjamin',
+            ('demo_alumno', 'Benjamin',
              'Barrios', 'contacto@email.cl', 'student', '1234@wera'),
         ]
 
