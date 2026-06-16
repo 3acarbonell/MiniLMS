@@ -353,4 +353,6 @@ def download(request, block_id):
 def course_student_markdown_page(request, page_id):
     page = get_object_or_404(ContentBlock, id=page_id)
 
-    return render(request, 'core/course/student/markdown.html', {'page': page})
+    course = page.section.course
+
+    return render(request, 'core/course/student/markdown.html', {'page': page, 'course': course})
