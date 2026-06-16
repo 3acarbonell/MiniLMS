@@ -1135,11 +1135,19 @@
                                             </div>
                                             <div class="item-actions d-flex gap-1">
                                                 <button class="icon-btn edit-btn" data-bs-toggle="modal"
-                                                    data-bs-target="#modalBlock" data-id="{{ block.id }}"
-                                                    data-section="{{ section.id }}" data-title="{{ block.title }}"
-                                                    data-content="{{ block.content }}">
+                                                    data-bs-target="{% if block.block_type == 'page' %}#modalPageBlock{% else %}#modalFileBlock{% endif %}"
+                                                    data-id="{{ block.id }}" data-section="{{ section.id }}"
+                                                    data-title="{{ block.title }}"
+                                                    data-file="{{ block.file|default:'' }}">
                                                     ✏️
                                                 </button>
+
+                                                {% if block.block_type == 'page' %}
+                                                <div id="raw-markdown-{{ block.id }}" style="display: none;">
+                                                    {{ block.content_page }}
+                                                </div>
+                                                {% endif %}
+
                                                 <form action="{% url 'core:course_teacher_delete' 'block' block.id %}"
                                                     method="POST" onsubmit="return confirm('¿Eliminar este material?');"
                                                     class="d-inline">
@@ -1174,9 +1182,6 @@
                                             </div>
 
                                             <div class="item-actions d-flex gap-1">
-                                                <a href="#" class="icon-btn" title="Ver evaluación">
-                                                    👁
-                                                </a>
                                                 <form
                                                     action="{% url 'core:course_teacher_delete' 'assessment' assessment.id %}"
                                                     method="POST"
@@ -1766,14 +1771,19 @@
                     }
 
                     if (button && button.hasAttribute('data-id')) {
-                        document.getElementById('pageModalTitle').innerText = "Editar Contenido Markdown";
-                        idInput.value = button.getAttribute('data-id');
+                        const blockId = button.getAttribute('data-id');
+                        idInput.value = blockId;
 
                         const titleInput = modalPageBlock.querySelector('input[name="title"]');
-                        if (titleInput) titleInput.value = button.getAttribute('data-title');
 
-                        const contenidoPrevio = button.getAttribute('data-content-page') || '';
-                        easyMDEInstance.value(contenidoPrevio);
+                        if (titleInput) {
+                            titleInput.value = button.getAttribute('data-title');
+                        }
+
+                        const hiddenDiv = document.getElementById(`raw-markdown-${blockId}`);
+                        const previousContent = hiddenDiv ? hiddenDiv.textContent : '';
+
+                        easyMDEInstance.value(previousContent);
                     } else {
                         idInput.value = "";
                         modalPageBlock.querySelector('form').reset();
