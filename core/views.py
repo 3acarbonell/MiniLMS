@@ -133,7 +133,7 @@ def course_teacher(request, course_id):
             instance = get_object_or_404(
                 ContentBlock, id=block_id) if block_id else None
 
-            if block_type == '':
+            if block_type == 'file':
                 form = ContentFileForm(request.POST, instance=instance)
                 actual_type = 'file'
             else:
@@ -335,7 +335,7 @@ def course_student_grades(request, course_id):
 def download(request, block_id):
     block = get_object_or_404(ContentBlock, id=block_id)
 
-    file_name = block.content
+    file_name = block.file
 
     file_path = os.path.join(settings.BASE_DIR, 'core',
                              'static', 'core', 'courseFiles', file_name)
