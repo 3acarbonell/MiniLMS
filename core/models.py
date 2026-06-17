@@ -74,7 +74,8 @@ class ContentBlock(models.Model):
     @property
     def content_page_html(self):
         if self.content_page:
-            html = markdown.markdown(self.content_page, extensions=['extra'])
+            html = markdown.markdown(self.content_page, extensions=[
+                                     'extra', 'fenced_code', 'codehilite'])
 
             return mark_safe(html)
 
